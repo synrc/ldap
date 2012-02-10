@@ -1,0 +1,5 @@
+dn: uid=alice,ou=People,dc=synrc,dc=com
+changetype: delete
+
+dn: cn=bob,ou=People,dc=synrc,dc=com
+changetype: delete

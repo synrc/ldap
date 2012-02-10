@@ -1,0 +1,4 @@
+dn: cn=alice,ou=People,dc=synrc,dc=com
+changetype: moddn
+newRDN: uid=alice
+deleteOldRDN: 1

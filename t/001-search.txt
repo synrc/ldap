@@ -1,0 +1,26 @@
+# extended LDIF
+#
+# LDAPv3
+# base <dc=synrc,dc=com> with scope subtree
+# filter: (&(uid=*)(cn=Ma*))
+# requesting: ALL
+#
+
+# Maxim Sokhatsky, People, synrc.com
+dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
+uid: maxim
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: Sokhatsky
+mail: maxim@synrc.com
+givenName: Maxim
+cn: Maxim Sokhatsky
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1

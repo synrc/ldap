@@ -1,0 +1,38 @@
+dn: dc=synrc,dc=com
+dc: synrc
+objectClass: top
+objectClass: domain
+
+dn: uid=admin,dc=synrc,dc=com
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+uid: admin
+userPassword: secret
+
+dn: ou=People,dc=synrc,dc=com
+objectClass: top
+objectClass: organizationalunit
+ou: People
+
+dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
+mail: oleg.smirnov@gmail.com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+givenName: Oleg
+sn: Smirnov
+uid: master
+cn: Oleg Smirnov
+
+dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
+mail: maxim@synrc.com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+givenName: Maxim
+sn: Sokhatsky
+uid: maxim
+cn: Maxim Sokhatsky

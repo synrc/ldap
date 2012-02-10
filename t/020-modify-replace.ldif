@@ -1,0 +1,4 @@
+dn: cn=alice,ou=People,dc=synrc,dc=com
+changetype: modify
+replace: uid
+uid: alices

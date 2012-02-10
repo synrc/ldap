@@ -1,0 +1,4 @@
+dn: cn=bob,ou=People,dc=synrc,dc=com
+changetype: modify
+delete: homePhone
+-

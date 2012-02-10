@@ -1,0 +1,19 @@
+# extended LDIF
+#
+# LDAPv3
+# base <dc=synrc,dc=com> with scope subtree
+# filter: sn=*
+# requesting: cn sn 
+#
+
+# Oleg Smirnov, People, synrc.com
+dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
+sn: Smirnov
+cn: Oleg Smirnov
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1

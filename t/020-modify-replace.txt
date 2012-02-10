@@ -1,0 +1,82 @@
+# extended LDIF
+#
+# LDAPv3
+# base <dc=synrc,dc=com> with scope subtree
+# filter: objectClass=*
+# requesting: ALL
+#
+
+# synrc.com
+dn: dc=synrc,dc=com
+dc: synrc
+objectClass: top
+objectClass: domain
+
+# People, synrc.com
+dn: ou=People,dc=synrc,dc=com
+ou: People
+objectClass: top
+objectClass: organizationalunit
+
+# bob, People, synrc.com
+dn: cn=bob,ou=People,dc=synrc,dc=com
+mail: bob@synrc.com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+givenName: Bob
+sn: Surname
+uid: bob
+cn: Bob Surname
+
+# alice, People, synrc.com
+dn: cn=alice,ou=People,dc=synrc,dc=com
+mail: alice@synrc.com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+givenName: Alice
+sn: Surname
+uid: alices
+cn: Alice Surname
+
+# Oleg Smirnov, People, synrc.com
+dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
+uid: master
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: Smirnov
+mail: oleg.smirnov@gmail.com
+givenName: Oleg
+cn: Oleg Smirnov
+
+# Maxim Sokhatsky, People, synrc.com
+dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
+uid: maxim
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: Sokhatsky
+mail: maxim@synrc.com
+givenName: Maxim
+cn: Maxim Sokhatsky
+
+# admin, synrc.com
+dn: uid=admin,dc=synrc,dc=com
+uid: admin
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+userPassword:: c2VjcmV0
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 8
+# numEntries: 7
