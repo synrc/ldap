@@ -1,0 +1,40 @@
+# ldapsearch -b "ou=users,dc=synrc,dc=com" -D "cn=Manager,dc=synrc,dc=com" -w secret
+# ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -f openldap.ldif
+
+dn: dc=synrc,dc=com
+dc: synrc
+objectClass: top
+objectClass: domain
+
+dn: cn=users,dc=synrc,dc=com
+objectclass: container
+objectclass: top
+cn: users
+
+dn: cn=Vladimir Kirillov,cn=users,dc=synrc,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: apple-user
+objectClass: extensibleObject
+givenName: Vladimir
+sn: Kirillov
+uid: proger
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/tuser
+cn: Vladimir Kirillov
+
+dn: cn=Maxim Sokhatsky,cn=users,dc=synrc,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: apple-user
+objectClass: shadowAccount
+uidNumber: 1000
+gidNumber: 1000
+objectClass: extensibleObject
+givenName: Maxim
+homeDirectory: /home/tuser
+sn: Sokhatsky
+uid: 5HT
+cn: Maxim Sokhatsky
