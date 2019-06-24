@@ -2,7 +2,7 @@
 
 erl \
     -name eds@localhost \
-    -config eds.config \
+    -config sys.config \
     -pa ../emongo/ebin \
     -pa ebin \
     -boot start_sasl \
