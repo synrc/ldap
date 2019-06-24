@@ -16,7 +16,7 @@ defmodule LDAP.Mixfile do
 
   def package do
     [
-      files: ~w(doc include src mix.exs LICENSE),
+      files: ~w(doc src mix.exs LICENSE),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ldap,
