@@ -1,0 +1,9 @@
+{application, ldap, [
+    {description,  "LDAP Directory Server"},
+    {vsn,          "8.6.0"},
+    {applications, [kernel, stdlib]},
+    {modules,      [tcp_listener, eds_ops, eds_fsm, eds_filter, eds_object, eds_msg, 'LDAP', rbtree]},
+    {registered,   [tcp_server_sup, client_sup, ops_sup, tcp_listener]},
+    {mod, { eds_app, []}},
+    {env, []}
+]}.
