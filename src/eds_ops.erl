@@ -193,7 +193,7 @@ response({{searchRequest, _}, MessageID, _, From}, Result) ->
 response(_, Result) ->
     #'LDAPResult'{resultCode = Result, matchedDN = "", diagnosticMessage = ""}.
 
--spec message(tuple(), record()) -> tuple().
+-spec message(tuple(), tuple()) -> tuple().
 message({{bindRequest, _}, MessageID, _, _}, Response) ->
     {{bindResponse, Response}, MessageID};
 message({{searchRequest, _}, MessageID, _, _}, Response) ->
