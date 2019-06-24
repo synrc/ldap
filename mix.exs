@@ -5,7 +5,7 @@ defmodule LDAP.Mixfile do
     [
       app: :ldap,
       version: "8.6.0",
-      description: "ldap Financial Information Exchange",
+      description: "LDAP Directory and Identity Server",
       compilers: [:asn1] ++ Mix.compilers(),
       asn1_paths: ["src"],
       package: package(),
