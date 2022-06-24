@@ -1,0 +1,131 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+  </head>
+    <title>Spawnproc LDAP</title>
+    <link rel="stylesheet" href="5HT.css" />
+</head>
+<body>
+<div class=menu>
+<a href="index.html">articles</a>
+</div>
+<hr>
+<div class=app>
+
+<div align=right>FROM: 5HT<br>
+                   TO: #VOXOZ<br>
+                 DATE: 29 SEP 2015</div>
+
+<h2>LDAP: Identity Server</h2>
+<h4>TL;DR — Enterprise token storage service</h4>
+<br><br>
+
+<div class=message>
+
+<p><center>Password setup</center><br>
+<div class=note><pre>
+    /usr/sbin/slappasswd -h {SSHA}
+</p></pre></div></p>
+
+<p><center>LDAP setup</center><br>
+<div class=note><pre>
+
+  $ cat /etc/openldap/ldap.conf
+
+    BASE        dc=synrc,dc=com
+    TLS_REQCERT	demand
+
+  $ cat /etc/openldap/slapd.conf
+
+    include     /etc/openldap/schema/core.schema
+    include     /etc/openldap/schema/cosine.schema
+    include     /etc/openldap/schema/inetorgperson.schema
+    pidfile     /var/db/openldap/run/slapd.pid
+    argsfile    /var/db/openldap/run/slapd.args
+    database    monitor
+    database    bdb
+    suffix      "dc=synrc,dc=com"
+    rootdn      "cn=Manager,dc=synrc,dc=com"
+    rootpw      {SSHA}Fp+86gE2WSeUd42FyvRVZKoJO5UiCuax
+    directory   /var/db/openldap/openldap-data
+    index       objectClass                       eq,pres
+    index       ou,cn,mail,sn,givenname           eq,pres,sub
+    index       uidNumber,gidNumber               eq,pres
+    index       uid                               eq,pres,sub
+
+</p></pre></div></p>
+
+<p><center>LDAP server start</center><br>
+<div class=note><pre>
+  $ sudo chown -R 5HT /var/db/openldap
+
+  $ rm -rf /var/db/openldap/openldap-data ; \
+    mkdir /var/db/openldap/openldap-data ; \
+    sudo /usr/libexec/slapd -d 255
+</p></pre></div></p>
+
+
+<p><center>database initialization</center><br>
+<div class=note><pre>
+
+  $ cat init.ldif
+
+    dn: dc=synrc,dc=com
+    objectClass: top
+    objectClass: dcObject
+    objectClass: organization
+    dc: synrc
+    o: synrc
+    description: synrc.com
+
+    dn: ou=People,dc=synrc,dc=com
+    ou: People
+    objectClass: top
+    objectClass: organizationalUnit
+
+  $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w pass -f init.ldif
+
+</p></pre></div></p>
+
+<p><center>database population</center><br>
+<div class=note><pre>
+  $ cat add.ldif
+
+    dn: cn=Vlad Ki,ou=People,dc=synrc,dc=com
+    objectClass: top
+    objectClass: person
+    objectClass: inetOrgPerson
+    givenName: Vlad
+    userPassword: 12w13
+    sn: Ki
+
+    dn: cn=Maxim Ericsson,ou=people,dc=synrc,dc=com
+    objectClass: top
+    objectClass: person
+    objectClass: inetOrgPerson
+    givenName: Maxim
+    userPassword: 12w14
+    sn: Ericsson
+
+  $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w pass -f add.ldif
+</p></pre></div></p>
+
+
+<p><center>Search Users population</center><br>
+<div class=note><pre>
+  $ ldapsearch -x -D "cn=Manager,dc=synrc,dc=com" -w pass | grep dn:
+
+    dn: dc=synrc,dc=com
+    dn: ou=People,dc=synrc,dc=com
+    dn: cn=Vlad Ki,ou=People,dc=synrc,dc=com
+    dn: cn=Maxim Ericsson,ou=People,dc=synrc,dc=com
+</p></pre></div></p>
+
+</div>
+</div>
+</body>
+</html>
