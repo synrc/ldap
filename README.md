@@ -3,6 +3,9 @@ SYNRC LDAP
 
 SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.
 
+![ldap-shaders](https://github.com/synrc/ldap/assets/144776/19f35667-9a0e-4e43-8524-b6ccdf6c21b7)
+
+
 Search
 ------
 
