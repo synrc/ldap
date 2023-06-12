@@ -1,7 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc Red-black tree
-%% Original code by Fuad Tabba (cs.auckland.ac.nz at fuad OR altabba.org at fuad)
-
 -module(rbtree).
 -export([insert/3, delete/2, lookup/2, issane/1]).
 

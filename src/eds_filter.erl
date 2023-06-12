@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc LDAP filter
-
 -module(eds_filter).
 
 -export([filter/1, scope/2, fields/1, limit/1]).

@@ -11,7 +11,7 @@ objectclass: container
 objectclass: top
 cn: users
 
-dn: cn=Vladimir Kirillov,cn=users,dc=synrc,dc=com
+dn: cn=Mariia Korobetska,cn=users,dc=synrc,dc=com
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
@@ -23,7 +23,7 @@ uid: proger
 uidNumber: 1001
 gidNumber: 1001
 homeDirectory: /home/tuser
-cn: Vladimir Kirillov
+cn: Mariia Korobetska
 
 dn: cn=Maxim Sokhatsky,cn=users,dc=synrc,dc=com
 objectClass: inetOrgPerson

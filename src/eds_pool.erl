@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc Workers pool
-
 -module(eds_pool).
 
 -export([init/0, insert/3, lookup_k/2, lookup_v/2, 

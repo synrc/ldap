@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc LDAP Message
-
 -module(eds_msg).
 
 -export([encode/1, decode/1]).

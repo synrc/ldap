@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc LDAP Object
-
 -module(eds_object).
 
 -export([modify/3, get/2, insert/3, delete/2, to_attr/1, to_record/1]).

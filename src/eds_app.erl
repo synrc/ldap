@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc Erlang Directory Server Application
-
 -module(eds_app).
 
 -behaviour(application).

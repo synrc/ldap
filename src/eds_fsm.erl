@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc Client FSM
-
 -module(eds_fsm).
 
 -behaviour(gen_fsm).

@@ -6,10 +6,10 @@
 # requesting: cn sn 
 #
 
-# Oleg Smirnov, People, synrc.com
-dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
-sn: Smirnov
-cn: Oleg Smirnov
+# Namdak Tonpa, People, synrc.com
+dn: cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
+sn: Tonpa
+cn: Namdak Tonpa
 
 # search result
 search: 2

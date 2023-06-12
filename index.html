@@ -1,131 +1,100 @@
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="author" content="Maxim Sokhatsky" />
-  </head>
-    <title>Spawnproc LDAP</title>
-    <link rel="stylesheet" href="5HT.css" />
-</head>
-<body>
-<div class=menu>
-<a href="index.html">articles</a>
-</div>
-<hr>
-<div class=app>
+<html><head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" /><meta name="author" content="Maxim Sokhatsky" />
+<title>LDAP</title>
+<link rel="stylesheet" href="https://n2o.dev/blank.css" />
+<link rel="stylesheet" href="https://n2o.dev/zima.css" />
+<link rel="stylesheet" href="https://n2o.dev/pro/pro.css?v=3" />
+</head><body><nav>
+    <a href="https://erp.uno">ERP</a>
+    <a href="https://ldap.erp.uno" style="background:#ededed;">LDAP</a>
+</nav><header>
+    <a href="https://github.com/synrc/ldap"><img src="https://avatars.githubusercontent.com/u/4131155?s=400&u=5e1fb3f98771143ec08d91485e5a274ab60a5960&v=4" /></a>
+    <h1>LDAP</h1>
+</header><aside>
+    <article>
+        <section>
+            <h3>SYNOPSIS</h3>
+            <div>SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.</div>
 
-<div align=right>FROM: 5HT<br>
-                   TO: #VOXOZ<br>
-                 DATE: 29 SEP 2015</div>
+        </section>
+        <section>
+            <h3>SPEC</h3>
+            <div><ul><li><a href="man/ocsp.htm">OCSP</a></li>
+                     <li><a href="man/ldap.htm">LDAP</a></li>
+                     <li><a href="man/ecc.htm">ECC</a></li></ul></div>
+            <br />
+            <div>
+                MAR 2023 © <a href="https://github.com/5HT">5HT</a> DHARMA 2.0<br />
+                VER 7.3
+            </div>
+        </section>
+    </article>
+</aside>
+<main>
+    <article>
+        <section>
+            <h3>LDAP CHECK</h3>
 
-<h2>LDAP: Identity Server</h2>
-<h4>TL;DR — Enterprise token storage service</h4>
-<br><br>
+            <figure><img src="priv/design/ldap-shaders.png" width=900></figure>
+        </section>
+        <section>
+           <h3>SEARCH</h3>
+           <figure><code>
+$ ldapsearch -b "dc=synrc,dc=com" 'objectClass=*' -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+$ ldapsearch -b "dc=synrc,dc=com" '(&(uid=*)(cn=Ma*))' -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+$ ldapsearch -b "dc=synrc,dc=com" 'sn=*' cn sn -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+$ ldapsearch -b "dc=synrc,dc=com" 'sn=*' cn sn -z 1 -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+          </code></figure>
+        </section>
+        <section>
+           <h3>CREATE</h3>
+           <figure><code>
+$ ldapmodify -f t/010-add.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> adding new entry "cn=alice,ou=People,dc=synrc,dc=com"
+> adding new entry "cn=bob,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/011-add-exists.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> adding new entry "cn=alice,ou=People,dc=synrc,dc=com"
+> ldap_add: Already exists (68)
+          </code></figure>
+        </section>
+        <section>
+           <h3>MODIFY</h3>
+           <figure><code>
+$ ldapmodify -f t/020-modify-replace.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+$ modifying entry "cn=alice,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/021-modify-add.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> modifying entry "cn=alice,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/022-modify-del.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> modifying entry "cn=bob,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/023-modify-multi.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> modifying entry "cn=bob,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/024-modify-noobj.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> modifying entry "cn=eve,ou=People,dc=synrc,dc=com"
+> ldap_modify: No such object (32)
+$ ldapmodify -f t/025-modify-dn.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> modifying rdn of entry "cn=alice,ou=People,dc=synrc,dc=com"
+          </code></figure>
+        </section>
+        <section>
+           <h3>DELETE</h3>
+           <figure><code>
+$ ldapmodify -f t/030-delete.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> deleting entry "uid=alice,ou=People,dc=synrc,dc=com"
+> deleting entry "cn=bob,ou=People,dc=synrc,dc=com"
+$ ldapmodify -f t/031-delete-noobj.ldif -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
+> deleting entry "cn=alice,ou=People,dc=synrc,dc=com"
+> ldap_delete: No such object (32)
+          </code></figure>
 
-<div class=message>
+   <br><center>&dot;</center>
 
-<p><center>Password setup</center><br>
-<div class=note><pre>
-    /usr/sbin/slappasswd -h {SSHA}
-</p></pre></div></p>
-
-<p><center>LDAP setup</center><br>
-<div class=note><pre>
-
-  $ cat /etc/openldap/ldap.conf
-
-    BASE        dc=synrc,dc=com
-    TLS_REQCERT	demand
-
-  $ cat /etc/openldap/slapd.conf
-
-    include     /etc/openldap/schema/core.schema
-    include     /etc/openldap/schema/cosine.schema
-    include     /etc/openldap/schema/inetorgperson.schema
-    pidfile     /var/db/openldap/run/slapd.pid
-    argsfile    /var/db/openldap/run/slapd.args
-    database    monitor
-    database    bdb
-    suffix      "dc=synrc,dc=com"
-    rootdn      "cn=Manager,dc=synrc,dc=com"
-    rootpw      {SSHA}Fp+86gE2WSeUd42FyvRVZKoJO5UiCuax
-    directory   /var/db/openldap/openldap-data
-    index       objectClass                       eq,pres
-    index       ou,cn,mail,sn,givenname           eq,pres,sub
-    index       uidNumber,gidNumber               eq,pres
-    index       uid                               eq,pres,sub
-
-</p></pre></div></p>
-
-<p><center>LDAP server start</center><br>
-<div class=note><pre>
-  $ sudo chown -R 5HT /var/db/openldap
-
-  $ rm -rf /var/db/openldap/openldap-data ; \
-    mkdir /var/db/openldap/openldap-data ; \
-    sudo /usr/libexec/slapd -d 255
-</p></pre></div></p>
-
-
-<p><center>database initialization</center><br>
-<div class=note><pre>
-
-  $ cat init.ldif
-
-    dn: dc=synrc,dc=com
-    objectClass: top
-    objectClass: dcObject
-    objectClass: organization
-    dc: synrc
-    o: synrc
-    description: synrc.com
-
-    dn: ou=People,dc=synrc,dc=com
-    ou: People
-    objectClass: top
-    objectClass: organizationalUnit
-
-  $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w pass -f init.ldif
-
-</p></pre></div></p>
-
-<p><center>database population</center><br>
-<div class=note><pre>
-  $ cat add.ldif
-
-    dn: cn=Vlad Ki,ou=People,dc=synrc,dc=com
-    objectClass: top
-    objectClass: person
-    objectClass: inetOrgPerson
-    givenName: Vlad
-    userPassword: 12w13
-    sn: Ki
-
-    dn: cn=Maxim Ericsson,ou=people,dc=synrc,dc=com
-    objectClass: top
-    objectClass: person
-    objectClass: inetOrgPerson
-    givenName: Maxim
-    userPassword: 12w14
-    sn: Ericsson
-
-  $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w pass -f add.ldif
-</p></pre></div></p>
-
-
-<p><center>Search Users population</center><br>
-<div class=note><pre>
-  $ ldapsearch -x -D "cn=Manager,dc=synrc,dc=com" -w pass | grep dn:
-
-    dn: dc=synrc,dc=com
-    dn: ou=People,dc=synrc,dc=com
-    dn: cn=Vlad Ki,ou=People,dc=synrc,dc=com
-    dn: cn=Maxim Ericsson,ou=People,dc=synrc,dc=com
-</p></pre></div></p>
-
-</div>
-</div>
+        </section>
+    </article>
+</main>
+<footer>
+   <br><center>&dot;</center>
+   <br>
+Namdak Tonpa <span class="heart">❤</span> 2023</footer>
 </body>
 </html>

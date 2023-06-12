@@ -15,16 +15,16 @@ objectClass: top
 objectClass: organizationalunit
 ou: People
 
-dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
-mail: oleg.smirnov@gmail.com
+dn: cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
+mail: namdak@tonpa.guru
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetorgperson
-givenName: Oleg
-sn: Smirnov
+givenName: Namdak
+sn: Tonpa
 uid: master
-cn: Oleg Smirnov
+cn: Namdak Tonpa
 
 dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
 mail: maxim@synrc.com

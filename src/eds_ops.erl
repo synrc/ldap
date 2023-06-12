@@ -1,6 +1,3 @@
-%% @author Oleg Smirnov <oleg.smirnov@gmail.com>
-%% @doc LDAP Operations
-
 -module(eds_ops).
 
 -behaviour(gen_server).

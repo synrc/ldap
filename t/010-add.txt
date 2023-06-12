@@ -42,17 +42,17 @@ sn: Surname
 uid: alice
 cn: Alice Surname
 
-# Oleg Smirnov, People, synrc.com
-dn: cn=Oleg Smirnov,ou=People,dc=synrc,dc=com
+# Namdak Tonpa, People, synrc.com
+dn: cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
 uid: master
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetorgperson
-sn: Smirnov
-mail: oleg.smirnov@gmail.com
-givenName: Oleg
-cn: Oleg Smirnov
+sn: Tonpa
+mail: namdak@tonpa.guru
+givenName: Namdak
+cn: Namdak Tonpa
 
 # Maxim Sokhatsky, People, synrc.com
 dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
