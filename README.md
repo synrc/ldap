@@ -1,5 +1,5 @@
-SYNRC LDAP
-==========
+SYNRC 📇 LDAP
+=============
 
 SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.
 
