@@ -1,0 +1,43 @@
+dn: cn=alice,ou=People,dc=synrc,dc=com
+changetype: add
+mail: alice@synrc.com
+objectClass: top, person, organizationalPerson, inetorgperson
+givenName: Alice
+sn: Surname
+uid: alice
+cn: Alice Surname
+
+dn: cn=bob,ou=People,dc=synrc,dc=com
+changetype: add
+mail: bob@synrc.com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+givenName: Bob
+sn: Surname
+uid: bob
+cn: Bob Surname
+
+dn: cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
+uid: master
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: Tonpa
+mail: namdak@tonpa.guru
+givenName: Namdak
+cn: Namdak Tonpa
+
+# Maxim Sokhatsky, People, synrc.com
+dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
+uid: maxim
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: Sokhatsky
+mail: maxim@synrc.com
+givenName: Maxim
+cn: Maxim Sokhatsky

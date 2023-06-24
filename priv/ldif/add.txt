@@ -72,7 +72,7 @@ uid: admin
 objectClass: top
 objectClass: account
 objectClass: simpleSecurityObject
-userPassword:: c2VjcmV0
+userPassword:: f1OjTmKO
 
 # search result
 search: 2

@@ -1,0 +1,16 @@
+dn: dc=synrc,dc=com
+dc: synrc
+objectClass: top
+objectClass: domain
+
+dn: uid=admin,dc=synrc,dc=com
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+uid: admin
+userPassword: secret
+
+dn: ou=People,dc=synrc,dc=com
+objectClass: top
+objectClass: organizationalunit
+ou: People

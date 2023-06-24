@@ -3,7 +3,7 @@
 # LDAPv3
 # base <dc=synrc,dc=com> with scope subtree
 # filter: sn=*
-# requesting: cn sn 
+# requesting: cn sn
 #
 
 # Namdak Tonpa, People, synrc.com
@@ -11,9 +11,14 @@ dn: cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
 sn: Tonpa
 cn: Namdak Tonpa
 
+# Maxim Sokhatsky, People, synrc.com
+dn: cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com
+sn: Sokhatsky
+cn: Maxim Sokhatsky
+
 # search result
 search: 2
 result: 0 Success
 
-# numResponses: 2
-# numEntries: 1
+# numResponses: 3
+# numEntries: 2
