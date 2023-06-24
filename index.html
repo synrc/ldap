@@ -39,14 +39,6 @@
             <figure><img src="priv/design/ldap-shaders.png" width=900></figure>
         </section>
         <section>
-           <h3>SEARCH</h3>
-           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn</code></figure>
-        </section>
-        <section>
            <h3>CREATE</h3>
            <figure><code>$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f init.ldif
 $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add.ldif
@@ -66,9 +58,21 @@ $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</cod
            <figure><code>$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete.ldif
 $ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
 
+
+        </section>
+        <section>
+           <h3>SEARCH</h3>
+           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
+$ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin</code></figure>
+
    <br><center>&dot;</center>
 
         </section>
+
     </article>
 </main>
 <footer>

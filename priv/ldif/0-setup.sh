@@ -16,9 +16,9 @@ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete.ldif
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif
 
+ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
-
-ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
+ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin
