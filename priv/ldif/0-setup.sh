@@ -6,12 +6,12 @@ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f init.ldif
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add.ldif
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add-exists.ldif
 
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
-ldapmodify -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
+ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif
 
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete.ldif
 ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif
