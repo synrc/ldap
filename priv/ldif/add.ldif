@@ -1,7 +1,10 @@
 dn: cn=alice,ou=People,dc=synrc,dc=com
 changetype: add
 mail: alice@synrc.com
-objectClass: top, person, organizationalPerson, inetorgperson
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
 givenName: Alice
 sn: Surname
 uid: alice
