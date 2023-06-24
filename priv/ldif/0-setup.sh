@@ -20,3 +20,5 @@ ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
 ldapsearch -D "cn=Manager,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
+
+ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"

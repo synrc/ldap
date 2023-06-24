@@ -40,7 +40,8 @@
         </section>
         <section>
            <h3>SEARCH</h3>
-           <figure><code>$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
+           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn</code></figure>
