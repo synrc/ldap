@@ -4,7 +4,7 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "8.6.0",
+      version: "8.6.1",
       description: "LDAP Directory and Identity Server",
       package: package(),
       elixir: "~> 1.7",
@@ -33,7 +33,7 @@ defmodule LDAP.Mixfile do
   def deps() do
     [
 #      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
-#      {:ex_doc, "~> 0.11", only: :dev}
+      {:ex_doc, "~> 0.11", only: :dev}
     ]
   end
 end
