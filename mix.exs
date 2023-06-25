@@ -4,7 +4,7 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "8.6.1",
+      version: "8.6.2",
       description: "LDAP Directory and Identity Server",
       package: package(),
       elixir: "~> 1.7",
@@ -14,7 +14,7 @@ defmodule LDAP.Mixfile do
 
   def package do
     [
-      files: ~w(doc src mix.exs LICENSE),
+      files: ~w(doc lib include src man priv mix.exs LICENSE index.html README.md),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ldap,
