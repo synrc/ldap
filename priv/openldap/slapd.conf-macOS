@@ -1,0 +1,29 @@
+## /etc/ldap/slapd.conf
+
+include		/usr/local/etc/openldap/schema/core.schema
+include		/usr/local/etc/openldap/schema/cosine.schema
+include		/usr/local/etc/openldap/schema/inetorgperson.schema
+
+#referral	ldap://root.openldap.org
+
+pidfile		/usr/local/var/run/slapd.pid
+argsfile	/usr/local/var/run/slapd.args
+
+modulepath	/usr/local/opt/openldap/libexec/openldap
+moduleload	back_mdb.la
+# moduleload	back_ldap.la
+
+
+database config
+rootdn "cn=admin,cn=config"
+rootpw secret
+
+database	mdb
+maxsize		1073741824
+suffix		"dc=synrc,dc=com"
+rootdn		"cn=admin,dc=synrc,dc=com"
+rootpw		secret
+directory	/usr/local/var/openldap-data
+index	objectClass	eq
+
+database monitor

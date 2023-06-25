@@ -1,4 +1,5 @@
-#
+# /etc/ldap/slapd.ldif
+
 # See slapd-config(5) for details on configuration options.
 # This file should NOT be world readable.
 #
@@ -82,7 +83,7 @@ objectClass: olcMdbConfig
 olcDatabase: mdb
 olcDbMaxSize: 1073741824
 olcSuffix: dc=synrc,dc=com
-olcRootDN: cn=Manager,dc=synrc,dc=com
+olcRootDN: cn=admin,dc=synrc,dc=com
 # Cleartext passwords, especially for the rootdn, should
 # be avoided.  See slappasswd(8) and slapd-config(5) for details.
 # Use of strong authentication encouraged.

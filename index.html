@@ -39,29 +39,29 @@
         </section>
         <section>
            <h3>CREATE</h3>
-           <figure><code>$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f init.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add-exists.ldif</code></figure>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f init.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add-exists.ldif</code></figure>
         </section>
         <section>
            <h3>MODIFY</h3>
-           <figure><code>$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
         </section>
         <section>
            <h3>DELETE</h3>
-           <figure><code>$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
 
 
         </section>
         <section>
            <h3>SEARCH</h3>
-           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
+           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config" -Y EXTERNAL -H ldapi:///
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
 $ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"

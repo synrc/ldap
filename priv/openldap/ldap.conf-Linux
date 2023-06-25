@@ -1,3 +1,5 @@
+## /etc/ldap/ldap.conf
+
 BASE dc=synrc,dc=com
 URI ldap://ldap.synrc.com
 
@@ -32,7 +34,7 @@ rootpw {SSHA}5RDUd7LmFwT4w7Ezqyzel0doq/iuvrSa
 database mdb
 maxsize 1073741824
 suffix "dc=synrc,dc=com"
-rootdn "cn=Manager,dc=synrc,dc=com"
+rootdn "cn=admin,dc=synrc,dc=com"
 rootpw {SSHA}5RDUd7LmFwT4w7Ezqyzel0doq/iuvrSa
 directory /usr/local/var/ldap
 index objectClass eq
