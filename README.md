@@ -2,7 +2,8 @@ SYNRC 🌐 LDAP
 =============
 [![Hex pm](http://img.shields.io/hexpm/v/ldap.svg?style=flat)](https://hex.pm/packages/ldap)
 
-SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.
+SYNRC LDAP is a high-performance IETF 4525 4526 4929—2849 3296 3671-3673
+3866 4511-4518 4522 5480 compatible LDAP directory server with MNESIA backend.
 
 ![ldap-shaders](https://github.com/synrc/ldap/assets/144776/19f35667-9a0e-4e43-8524-b6ccdf6c21b7)
 
