@@ -18,7 +18,11 @@
 
         <h3>LDIF BOOT</h3>
 
+        <p>Startup test-suite scripts to be runed as <b class=se>suite.sh</b>.</p>
+
         <h4>INIT.LDIF</h4>
+
+        <P>Admin and global directory of top-level acounts (ou=People).</p>
 
            <figure><code>dn: dc=synrc,dc=com
 objectClass: top
@@ -40,6 +44,8 @@ objectClass: organizationalUnit
 ou: People</code></figure>
 
         <h4>ADD.LDIF</h4>
+
+        <P>Some of top-level acounts examples.</p>
 
            <figure><code>dn: cn=alice,ou=People,dc=synrc,dc=com
 changetype: add
