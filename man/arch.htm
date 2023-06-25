@@ -67,18 +67,18 @@
 
 <p>These tables could be flat sharing the collection space with unique RDNs.</p>
 
-    <figure><code>+------------------------------+---+-----+--------------+-----------------+
-| Directory Plain Structure    | t | RDN | attributte   | value           |
-+------------------------------+---+-----+--------------+-----------------+
-| /dc=com/dc=synrc/0           | 0 | 0   | dn           | dc=synrc,dc=com |
-| /dc=com/dc=synrc/1           | 1 | 1   | dc           | synrc           |
-| /dc=com/dc=synrc/1           | 1 | 1   | objectClass  | top             |
-| /dc=com/dc=synrc/1           | 1 | 1   | objectClass  | domain          |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | uid          | admin           |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | objectClass  | top             |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | objectClass  | account         |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | userPassword | secret          |
-+------------------------------+---+-----+--------------+-----------------+</code></figure>
+    <figure><code>+--------------------------------+---+-----+--------------+-----------------+
+| Directory Plain Structure      | t | RDN | attributte   | value           |
++--------------------------------+---+-----+--------------+-----------------+
+| /dc=com/dc=synrc/dn:value      | 0 | 0   | dn           | dc=synrc,dc=com |
+| /dc=com/dc=synrc/dc:synrc      | 1 | 1   | dc           | synrc           |
+| /dc=com/dc=synrc/objectClass:t | 1 | 1   | objectClass  | top             |
+| /dc=com/dc=synrc/objectClass:d | 1 | 1   | objectClass  | domain          |
+| /dc=com/dc=synrc/uid=admin/u:a | 1 | 2   | uid          | admin           |
+| /dc=com/dc=synrc/uid=admin/o:t | 1 | 2   | objectClass  | top             |
+| /dc=com/dc=synrc/uid=admin/o:a | 1 | 2   | objectClass  | account         |
+| /dc=com/dc=synrc/uid=admin/u:s | 1 | 2   | userPassword | secret          |
++--------------------------------+---+-----+--------------+-----------------+</code></figure>
 
 
        <br><center>&dot;</center>
