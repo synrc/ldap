@@ -1,0 +1,67 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" /><meta name="author" content="Maxim Sokhatsky" />
+<title>CSR</title>
+<link rel="stylesheet" href="https://n2o.dev/blank.css" />
+<link rel="stylesheet" href="https://n2o.dev/zima.css" />
+<link rel="stylesheet" href="https://n2o.dev/pro/pro.css" />
+</head><body><nav>
+    <a href="https://erp.uno">ERP</a>
+    <a href="https://ca.erp.uno">LDAP</a>
+    <a href="#" style="background:#ededed;">ARCH</a>
+</nav><header>
+    <a href="../index.html"> <img src="https://openmoji.org/data/color/svg/1F310.svg" /></a>
+    <h1>ARCH</h1>
+</header><main>
+    <section>
+
+<h3>ARCH</h3>
+
+<h4>DIRECTORY</h4>
+
+    <p>The directory table contains two columns:
+       1) the DN path;
+       2) the MD5 hash of a path without attributes <b class=se>/config/schema/</b> e.g.
+       This is known as RDN and references the attribute table in compound key.</p>
+
+    <figure><code>+---------------------------------------------+----------------------------------+
+| Directory Server Hive                       | MD5                              |
++---------------------------------------------+----------------------------------+
+| /cn=config/                                 | 0fd4a19bbed528a8f0c2de4f997b0b9c |
+| /cn=config/cn=schema/                       | a0c1bc0df78cd4b25b3a36b3a1ca7e69 |
+| /cn=config/cn=schema/cn=core/               | 5b62ba332f659424cfb5399ede77c104 |
+| /cn=config/cn=schema/cn=cosine/             | 33cf73f939a337d38e733fab890cdbef |
+| /cn=config/cn=schema/cn=inetorgperson/      | d1545f2a9277429f91040673d7d1c16e |
+| /cn=config/cn=frontend/                     | 68017505289391882c8c42cd207828fe |
+| /cn=config/cn=config/                       | 13b5030d51e9b2e26880ab0ac1ccaac2 |
+| /cn=config/cn=mdb/                          | 7dc95b10322a4098b2a132a1332afd59 |
+| /cn=config/cn=monitor/                      | 5c24b2f5f9224e20322353caae73ecf1 |
++---------------------------------------------+----------------------------------+
+| /dc=com/dc=synrc/                           | 26411770500c81975d50a013a99caec5 |
+| /dc=com/dc=synrc/uid=admin/                 | 031895ad6c4428b491f6c34f356f93da |
+| /dc=com/dc=synrc/cn=Manager/                | 8ef7a25b148522c9a7361c8321ebb069 |
+| /dc=com/dc=synrc/ou=People/                 | 570ccc8e904789e8f5b37c0ae2782bd9 |
+| /dc=com/dc=synrc/ou=People/cn=Namdak Tonpa/ | 9aa3efa4285d57b69a7eb0aeba674da1 |
+| /dc=com/dc=synrc/ou=People/cn=Max Socha/    | e048fc85922d2de75e1990309c3d6840 |
++---------------------------------------------+----------------------------------+</code></figure>
+
+<h4>ATTRIBUTES</h4>
+
+    <figure><code>+----------------------------------+--------------+----------------------+
+| RDN MD5                          | attributte   | value                |
++----------------------------------+--------------+----------------------+
+| 26411770500c81975d50a013a99caec5 | dc           | synrc                |
+| 26411770500c81975d50a013a99caec5 | objectClass  | top                  |
+| 26411770500c81975d50a013a99caec5 | objectClass  | domain               |
+| 031895ad6c4428b491f6c34f356f93da | uid          | admin                |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | top                  |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | account              |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject |
+| 031895ad6c4428b491f6c34f356f93da | userPassword | secret               |
++----------------------------------+--------------+----------------------+</code></figure>
+
+       <br><center>&dot;</center>
+
+    </section>
+</main><footer>   <br><center>&dot;</center><br> 2005—2023 © Synrc Research Center
+</footer></body></html>
