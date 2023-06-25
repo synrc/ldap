@@ -65,20 +65,21 @@
 
 <h3>ROCKSDB NVME</h3>
 
+<p>These tables could be flat sharing the collection space with unique RDNs.</p>
+
     <figure><code>
-+------------------------------+---+----------------------------------+--------------+----------------------+
-| Directory Plain Structure    | t | RDN MD5                          | attributte   | value                |
-+------------------------------+---+----------------------------------+--------------+----------------------+
-| /dc=com/dc=synrc/0           | 0 | 26411770500c81975d50a013a99caec5 | dn           | dc=com/dc=synrc      |
-| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | dc           | synrc                |
-| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | objectClass  | top                  |
-| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | objectClass  | domain               |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | uid          | admin                |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | top                  |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | account              |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject |
-| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | userPassword | secret               |
-+------------------------------+---+----------------------------------+--------------+----------------------+</code></figure>
++------------------------------+---+-----+--------------+-----------+
+| Directory Plain Structure    | t | RDN | attributte   | value     |
++------------------------------+---+-----+--------------+-----------+
+| /dc=com/dc=synrc/0           | 0 | 0   | dn           | ...       |
+| /dc=com/dc=synrc/1           | 1 | 1   | dc           | synrc     |
+| /dc=com/dc=synrc/1           | 1 | 1   | objectClass  | top       |
+| /dc=com/dc=synrc/1           | 1 | 1   | objectClass  | domain    |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | uid          | admin     |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | objectClass  | top       |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | objectClass  | account   |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 2   | userPassword | secret    |
++------------------------------+---+-----+--------------+-----------+</code></figure>
 
 
        <br><center>&dot;</center>
