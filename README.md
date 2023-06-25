@@ -1,5 +1,6 @@
 SYNRC 🌐 LDAP
 =============
+[![Hex pm](http://img.shields.io/hexpm/v/ldap.svg?style=flat)](https://hex.pm/packages/ldap)
 
 SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.
 
