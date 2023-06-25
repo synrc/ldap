@@ -74,30 +74,15 @@ Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
 
            <h4>TEST</h4>
            <figure><code>> LDAP.testConnection
-{:ok,
- {:eldap_search_result,
-  [
-    {:eldap_entry, 'cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com',
-     [
-       {'objectClass',
-        ['top', 'person', 'organizationalPerson', 'inetOrgPerson']},
-       {'mail', ['maxim@synrc.com']},
-       {'cn', ['Maxim Sokhatsky']}
-     ]},
-    {:eldap_entry, 'cn=Namdak Tonpa,ou=People,dc=synrc,dc=com',
-     [
-       {'objectClass',
-        ['top', 'person', 'organizationalPerson', 'inetOrgPerson']},
-       {'mail', ['namdak@tonpa.guru']},
-       {'cn', ['Namdak Tonpa']}
-     ]},
-    {:eldap_entry, 'uid=admin,dc=synrc,dc=com',
-     [{'objectClass', ['top', 'account', 'simpleSecurityObject']}]},
-    {:eldap_entry, 'ou=People,dc=synrc,dc=com',
-     [{'objectClass', ['top', 'organizationalUnit']}]},
-    {:eldap_entry, 'dc=synrc,dc=com',
-     [{'objectClass', ['top', 'dcObject', 'organization']}]}
-  ], []}}</code></figure>
+[
+  {:dn, 'cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com',
+   [{'mail', ['maxim@synrc.com']}, {'cn', ['Maxim Sokhatsky']}]},
+  {:dn, 'cn=Namdak Tonpa,ou=People,dc=synrc,dc=com',
+   [{'mail', ['namdak@tonpa.guru']}, {'cn', ['Namdak Tonpa']}]},
+  {:dn, 'uid=admin,dc=synrc,dc=com', []},
+  {:dn, 'ou=People,dc=synrc,dc=com', []},
+  {:dn, 'dc=synrc,dc=com', []}
+]</code></figure>
 
    <br><center>&dot;</center>
 
