@@ -1,2 +1,0 @@
-ldap_delete: No such object (32)
-deleting entry "cn=alice,ou=People,dc=synrc,dc=com"

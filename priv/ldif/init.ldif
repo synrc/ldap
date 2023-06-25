@@ -1,7 +1,9 @@
 dn: dc=synrc,dc=com
-dc: synrc
 objectClass: top
-objectClass: domain
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+dc: synrc
 
 dn: uid=admin,dc=synrc,dc=com
 objectClass: top
@@ -12,5 +14,5 @@ userPassword: secret
 
 dn: ou=People,dc=synrc,dc=com
 objectClass: top
-objectClass: organizationalunit
+objectClass: organizationalUnit
 ou: People

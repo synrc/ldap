@@ -1,3 +1,0 @@
-ldap_add: Already exists (68)
-adding new entry "cn=alice,ou=People,dc=synrc,dc=com"
-

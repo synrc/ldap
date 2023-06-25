@@ -1,5 +1,0 @@
-dc=synrc,dc=com
-uid=admin,dc=synrc,dc=com
-ou=People,dc=synrc,dc=com
-cn=Namdak Tonpa,ou=People,dc=synrc,dc=com
-cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com

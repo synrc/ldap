@@ -1,2 +1,0 @@
-ldap_modify: No such object (32)
-modifying entry "cn=eve,ou=People,dc=synrc,dc=com"
