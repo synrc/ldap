@@ -20,7 +20,7 @@
 <h4>DIRECTORY</h4>
 
     <p>The directory table contains two columns:
-       1) the DN path;
+       1) the DN path, prefix-searchable;
        2) the MD5 hash of a path without attributes <b class=se>/config/schema/</b> e.g.
        This is known as RDN and references the attribute table in compound key.</p>
 
@@ -46,6 +46,9 @@
 +---------------------------------------------+----------------------------------+</code></figure>
 
 <h4>ATTRIBUTES</h4>
+
+<p>The attributes table contains attributes information per RDN. The values are prefix-selectable.
+   RDN MD5 is main subindex.</p>
 
     <figure><code>+----------------------------------+--------------+----------------------+
 | RDN MD5                          | attributte   | value                |
