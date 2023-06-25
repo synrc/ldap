@@ -6,52 +6,43 @@ SYNRC LDAP is a high-performance LDAP directory server with MNESIA backend.
 
 ![ldap-shaders](https://github.com/synrc/ldap/assets/144776/19f35667-9a0e-4e43-8524-b6ccdf6c21b7)
 
-Create
+Run
 ------
 
 ```
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f init.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f add-exists.ldif
+$ mix deps.get
+$ iex -S mix
+Erlang/OTP 24 [erts-12.2.1] [source] [64-bit]
+              [smp:12:12] [ds:12:12:10] [async-threads:1] [jit]
+
+Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
+> :application.which_applications
+[
+  {:ldap, 'LDAP Directory and Identity Server', '8.6.0'},
+  {:eldap, 'Ldap api', '1.2.9'},
+  {:mix, 'mix', '1.12.2'},
+  {:iex, 'iex', '1.12.2'},
+  {:elixir, 'elixir', '1.12.2'},
+  {:compiler, 'ERTS  CXC 138 10', '8.0.4'},
+  {:stdlib, 'ERTS  CXC 138 10', '3.17'},
+  {:kernel, 'ERTS  CXC 138 10', '8.2'}
+]
 ```
 
-Modify
-------
+Suite
+-----
 
 ```
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif
-```
-
-Delete
-------
-
-```
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete.ldif
-$ ldapadd -x -D "cn=Manager,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif
-```
-
-Search
-------
-
-```
-$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
-```
-
-Compare
--------
-
-```
-$ ldapcompare "uid=admin,dc=synrc,dc=com" uid:admin -h localhost -p 1389 -D "uid=admin,dc=synrc,dc=com" -w secret
-> TRUE
+> LDAP.testConnection
+[
+  {:dn, 'cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com',
+   [{'mail', ['maxim@synrc.com']}, {'cn', ['Maxim Sokhatsky']}]},
+  {:dn, 'cn=Namdak Tonpa,ou=People,dc=synrc,dc=com',
+   [{'mail', ['namdak@tonpa.guru']}, {'cn', ['Namdak Tonpa']}]},
+  {:dn, 'uid=admin,dc=synrc,dc=com', []},
+  {:dn, 'ou=People,dc=synrc,dc=com', []},
+  {:dn, 'dc=synrc,dc=com', []}
+]
 ```
 
 Credits
