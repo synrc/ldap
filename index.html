@@ -40,35 +40,64 @@
             <figure><img src="priv/design/ldap-shaders.png" width=900></figure>
         </section>
         <section>
-           <h3>CREATE</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f init.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add-exists.ldif</code></figure>
-        </section>
-        <section>
-           <h3>MODIFY</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
-        </section>
-        <section>
-           <h3>DELETE</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
+           <h3>MIX</h3>
+           <h4>RUN</h4>
+           <figure><code>$ mix deps.get
+$ iex -S mix
+Erlang/OTP 24 [erts-12.2.1] [source] [64-bit]
+              [smp:12:12] [ds:12:12:10] [async-threads:1] [jit]
 
+Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
+> :application.which_applications
+[
+  {:ldap, 'LDAP Directory and Identity Server', '8.6.0'},
+  {:eldap, 'Ldap api', '1.2.9'},
+  {:mix, 'mix', '1.12.2'},
+  {:iex, 'iex', '1.12.2'},
+  {:elixir, 'elixir', '1.12.2'},
+  {:compiler, 'ERTS  CXC 138 10', '8.0.4'},
+  {:stdlib, 'ERTS  CXC 138 10', '3.17'},
+  {:kernel, 'ERTS  CXC 138 10', '8.2'}
+]</code></figure>
 
-        </section>
-        <section>
-           <h3>SEARCH</h3>
-           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config" -Y EXTERNAL -H ldapi:///
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
-$ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin</code></figure>
+           <h4>CODE</h4>
+           <figure><code>  def testConnection() do
+      {:ok, conn} = :eldap.open(['127.0.0.1'], [{:port, 389}, {:ssl, false}])
+      :ok = :eldap.simple_bind(conn, 'cn=admin,dc=synrc,dc=com', 'secret')
+      filter = :eldap.and([ ])
+      scope = :wholeSubtree
+      base = 'dc=synrc,dc=com'
+      attrs = ['cn','mail','objectClass']
+      :eldap.search(conn, base: base, scope: scope,
+                    filter: filter, attributes: attrs)
+  end</code></figure>
+
+           <h4>TEST</h4>
+           <figure><code>> LDAP.testConnection
+{:ok,
+ {:eldap_search_result,
+  [
+    {:eldap_entry, 'cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com',
+     [
+       {'objectClass',
+        ['top', 'person', 'organizationalPerson', 'inetOrgPerson']},
+       {'mail', ['maxim@synrc.com']},
+       {'cn', ['Maxim Sokhatsky']}
+     ]},
+    {:eldap_entry, 'cn=Namdak Tonpa,ou=People,dc=synrc,dc=com',
+     [
+       {'objectClass',
+        ['top', 'person', 'organizationalPerson', 'inetOrgPerson']},
+       {'mail', ['namdak@tonpa.guru']},
+       {'cn', ['Namdak Tonpa']}
+     ]},
+    {:eldap_entry, 'uid=admin,dc=synrc,dc=com',
+     [{'objectClass', ['top', 'account', 'simpleSecurityObject']}]},
+    {:eldap_entry, 'ou=People,dc=synrc,dc=com',
+     [{'objectClass', ['top', 'organizationalUnit']}]},
+    {:eldap_entry, 'dc=synrc,dc=com',
+     [{'objectClass', ['top', 'dcObject', 'organization']}]}
+  ], []}}</code></figure>
 
    <br><center>&dot;</center>
 
