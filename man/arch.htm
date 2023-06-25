@@ -50,35 +50,35 @@
 <p>The attributes table contains attributes information per RDN. The values are prefix-selectable.
    RDN MD5 is main subindex.</p>
 
-    <figure><code>+----------------------------------+--------------+-------------------------+
-| RDN MD5                          | attributte   | value                   |
-+----------------------------------+--------------+-------------------------+
-| 26411770500c81975d50a013a99caec5 | dc           | synrc                   |
-| 26411770500c81975d50a013a99caec5 | objectClass  | top                     |
-| 26411770500c81975d50a013a99caec5 | objectClass  | domain                  |
-| 031895ad6c4428b491f6c34f356f93da | uid          | admin                   |
-| 031895ad6c4428b491f6c34f356f93da | objectClass  | top                     |
-| 031895ad6c4428b491f6c34f356f93da | objectClass  | account                 |
-| 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject    |
-| 031895ad6c4428b491f6c34f356f93da | userPassword | secret                  |
-+----------------------------------+--------------+-------------------------+</code></figure>
+    <figure><code>+----------------------------------+--------------+------------------------------+
+| RDN MD5                          | attributte   | value                        |
++----------------------------------+--------------+------------------------------+
+| 26411770500c81975d50a013a99caec5 | dc           | synrc                        |
+| 26411770500c81975d50a013a99caec5 | objectClass  | top                          |
+| 26411770500c81975d50a013a99caec5 | objectClass  | domain                       |
+| 031895ad6c4428b491f6c34f356f93da | uid          | admin                        |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | top                          |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | account                      |
+| 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject         |
+| 031895ad6c4428b491f6c34f356f93da | userPassword | secret                       |
++----------------------------------+--------------+------------------------------+</code></figure>
 
 <h3>ROCKSDB NVME</h3>
 
 <p>These tables could be flat sharing the collection space with unique RDNs.</p>
 
-    <figure><code>+--------------------------------+---+-----+--------------+-----------------+
-| Directory Plain Structure      | t | RDN | attributte   | value           |
-+--------------------------------+---+-----+--------------+-----------------+
-| /dc=com/dc=synrc/dn:value      | 0 | 0   | dn           | dc=synrc,dc=com |
-| /dc=com/dc=synrc/dc:synrc      | 1 | 1   | dc           | synrc           |
-| /dc=com/dc=synrc/objectClass:t | 1 | 1   | objectClass  | top             |
-| /dc=com/dc=synrc/objectClass:d | 1 | 1   | objectClass  | domain          |
-| /dc=com/dc=synrc/uid=admin/u:a | 1 | 2   | uid          | admin           |
-| /dc=com/dc=synrc/uid=admin/o:t | 1 | 2   | objectClass  | top             |
-| /dc=com/dc=synrc/uid=admin/o:a | 1 | 2   | objectClass  | account         |
-| /dc=com/dc=synrc/uid=admin/u:s | 1 | 2   | userPassword | secret          |
-+--------------------------------+---+-----+--------------+-----------------+</code></figure>
+    <figure><code>+--------------------------------+---+-----+--------------+----------------------+
+| Directory Plain Structure      | t | RDN | attributte   | value                |
++--------------------------------+---+-----+--------------+----------------------+
+| /dc=com/dc=synrc/dn:value      | 0 | 0   | dn           | dc=synrc,dc=com      |
+| /dc=com/dc=synrc/dc:synrc      | 1 | 1   | dc           | synrc                |
+| /dc=com/dc=synrc/objectClass:t | 1 | 1   | objectClass  | top                  |
+| /dc=com/dc=synrc/objectClass:d | 1 | 1   | objectClass  | domain               |
+| /dc=com/dc=synrc/uid=admin/u:a | 1 | 2   | uid          | admin                |
+| /dc=com/dc=synrc/uid=admin/o:t | 1 | 2   | objectClass  | top                  |
+| /dc=com/dc=synrc/uid=admin/o:a | 1 | 2   | objectClass  | account              |
+| /dc=com/dc=synrc/uid=admin/u:s | 1 | 2   | userPassword | secret               |
++--------------------------------+---+-----+--------------+----------------------+</code></figure>
 
 
        <br><center>&dot;</center>
