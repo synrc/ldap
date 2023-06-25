@@ -1,0 +1,102 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" /><meta name="author" content="Maxim Sokhatsky" />
+<title>LDAP CONF</title>
+<link rel="stylesheet" href="https://n2o.dev/blank.css" />
+<link rel="stylesheet" href="https://n2o.dev/zima.css" />
+<link rel="stylesheet" href="https://n2o.dev/pro/pro.css" />
+</head><body><nav>
+    <a href="https://erp.uno">ERP</a>
+    <a href="https://ldap.erp.uno">LDAP</a>
+    <a href="#" style="background:#ededed;">CONF</a>
+</nav><header>
+    <a href="../index.html"> <img src="https://openmoji.org/data/color/svg/1F310.svg" /></a>
+    <h1>CONF</h1>
+</header><main>
+    <section>
+
+<h3>LINUX</h3>
+
+    <figure><code>## /etc/ldap/ldap.conf
+
+BASE dc=synrc,dc=com
+URI ldap://ldap.synrc.com
+
+#SIZELIMIT 12
+#TIMELIMIT 15
+#DEREF never
+
+TLS_CACERT /etc/ssl/certs/ca-certificates.crt
+
+include /etc/ldap/schema/core.schema
+include /etc/ldap/schema/cosine.schema
+include /etc/ldap/schema/inetorgperson.schema
+
+#referral ldap://root.openldap.org
+pidfile /usr/local/var/run/slapd.pid
+argsfile /usr/local/var/run/slapd.args
+
+modulepath /usr/local/opt/openldap/libexec/openldap
+moduleload back_mdb.la
+# moduleload back_ldap.la
+
+access to dn.base="" by * read
+access to * 
+       by self write
+       by users read
+       by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" write
+
+database config
+rootdn "cn=admin,cn=config"
+rootpw {SSHA}5RDUd7LmFwT4w7Ezqyzel0doq/iuvrSa
+
+database mdb
+maxsize 1073741824
+suffix "dc=synrc,dc=com"
+rootdn "cn=admin,dc=synrc,dc=com"
+rootpw {SSHA}5RDUd7LmFwT4w7Ezqyzel0doq/iuvrSa
+directory /usr/local/var/ldap
+index objectClass eq
+
+database monitor    </code></figure>
+
+</section>
+<section>
+
+<h3>MAC</h3>
+
+    <figure><code>## /etc/ldap/slapd.conf
+
+include		/usr/local/etc/openldap/schema/core.schema
+include		/usr/local/etc/openldap/schema/cosine.schema
+include		/usr/local/etc/openldap/schema/inetorgperson.schema
+
+#referral	ldap://root.openldap.org
+
+pidfile		/usr/local/var/run/slapd.pid
+argsfile	/usr/local/var/run/slapd.args
+
+modulepath	/usr/local/opt/openldap/libexec/openldap
+moduleload	back_mdb.la
+# moduleload	back_ldap.la
+
+
+database config
+rootdn "cn=admin,cn=config"
+rootpw secret
+
+database	mdb
+maxsize		1073741824
+suffix		"dc=synrc,dc=com"
+rootdn		"cn=admin,dc=synrc,dc=com"
+rootpw		secret
+directory	/usr/local/var/openldap-data
+index	objectClass	eq
+
+database monitor </code></figure>
+
+       <br><center>&dot;</center>
+
+    </section>
+</main><footer>   <br><center>&dot;</center><br> 2005—2023 © Synrc Research Center
+</footer></body></html>

@@ -6,8 +6,6 @@ defmodule LDAP.Mixfile do
       app: :ldap,
       version: "8.6.0",
       description: "LDAP Directory and Identity Server",
-      compilers: [:asn1] ++ Mix.compilers(),
-      asn1_paths: ["src"],
       package: package(),
       elixir: "~> 1.7",
       deps: deps()
@@ -26,13 +24,16 @@ defmodule LDAP.Mixfile do
 
 
   def application() do
-    [mod: {:eds_app, []}]
+    [
+      mod: {:eds_app, []},
+      extra_applications: [:eldap]
+    ]
   end
 
   def deps() do
     [
-      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev}
+#      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
+#      {:ex_doc, "~> 0.11", only: :dev}
     ]
   end
 end

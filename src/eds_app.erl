@@ -9,7 +9,7 @@
 -define(MAX_RESTART, 5).
 -define(MAX_TIME, 60).
 
--define(DEF_LDAP_PORT, 389).
+-define(DEF_LDAP_PORT, 1389).
 -define(DEF_EMONGO_HOST, "localhost").
 -define(DEF_EMONGO_PORT, 27017).
 -define(DEF_EMONGO_DB, "eds").
@@ -30,8 +30,9 @@ start_emongo() ->
     EmongoPort = get_app_env(emongo_port, ?DEF_EMONGO_PORT),
     EmongoDB = get_app_env(emongo_db, ?DEF_EMONGO_DB),
     EmongoPool = get_app_env(emongo_pool, ?DEF_EMONGO_POOL),
-    ok = application:start(emongo),
-    emongo:add_pool(eds, EmongoHost, EmongoPort, EmongoDB, EmongoPool).
+%    ok = application:start(emongo),
+%    emongo:add_pool(eds, EmongoHost, EmongoPort, EmongoDB, EmongoPool),
+   ok.
 
 -spec start(any(), any()) -> {ok, pid()}.
 start(_Type, _Args) ->
