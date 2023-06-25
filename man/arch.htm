@@ -15,7 +15,7 @@
 </header><main>
     <section>
 
-<h3>ARCH</h3>
+<h3>MESIA</h3>
 
 <h4>DIRECTORY</h4>
 
@@ -50,7 +50,7 @@
 <p>The attributes table contains attributes information per RDN. The values are prefix-selectable.
    RDN MD5 is main subindex.</p>
 
-    <figure><code>+----------------------------------+--------------+----------------------+
+    <figure><code>| +----------------------------------+--------------+----------------------+
 | RDN MD5                          | attributte   | value                |
 +----------------------------------+--------------+----------------------+
 | 26411770500c81975d50a013a99caec5 | dc           | synrc                |
@@ -62,6 +62,24 @@
 | 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject |
 | 031895ad6c4428b491f6c34f356f93da | userPassword | secret               |
 +----------------------------------+--------------+----------------------+</code></figure>
+
+<h3>ROCKSDB NVME</h3>
+
+    <figure><code>
++------------------------------+---+----------------------------------+--------------+----------------------+
+| Directory Plain Structure    | t | RDN MD5                          | attributte   | value                |
++------------------------------+---+----------------------------------+--------------+----------------------+
+| /dc=com/dc=synrc/0           | 0 | 26411770500c81975d50a013a99caec5 | dn           | dc=com/dc=synrc      |
+| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | dc           | synrc                |
+| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | objectClass  | top                  |
+| /dc=com/dc=synrc/1           | 1 | 26411770500c81975d50a013a99caec5 | objectClass  | domain               |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | uid          | admin                |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | top                  |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | account              |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | objectClass  | simpleSecurityObject |
+| /dc=com/dc=synrc/uid=admin/1 | 1 | 031895ad6c4428b491f6c34f356f93da | userPassword | secret               |
++------------------------------+---+----------------------------------+--------------+----------------------+</code></figure>
+
 
        <br><center>&dot;</center>
 
