@@ -1,0 +1,14 @@
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /usr/local/etc/openldap/sasl2/server.pem
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /usr/local/etc/openldap/sasl2/server.key
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
