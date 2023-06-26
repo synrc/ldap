@@ -8,7 +8,8 @@ defmodule LDAP.Mixfile do
       description: "LDAP Directory and Identity Server",
       package: package(),
       elixir: "~> 1.7",
-      deps: deps()
+      deps: deps(),
+      releases: [ldap: [include_executables_for: [:unix], cookie: "SYNRC:LDAP"]]
     ]
   end
 
