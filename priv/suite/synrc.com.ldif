@@ -20,27 +20,27 @@ objectClass: organizationalUnit
 description: Відділ обліку фінансової діяльності FIN
 postalCode: 100010
 
-dn: ou=300030,dc=legal,dc=synrc,dc=com
+dn: ou=300030,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Юридичний відділ LEGAL
 postalCode: 100010
 
-dn: ou=200020,dc=synrc,dc=com
+dn: ou=200020,dc=pm,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Управління розробки PM
 postalCode: 100010
 
-dn: ou=300040,dc=crypto,dc=synrc,dc=com
+dn: ou=300040,dc=synrc,dc=com
 objectClass: organizationalUnit
-description: Відділ математичної криптографії CRYPTO
+description: Відділ математичної криптографії N2O
 postalCode: 200020
 
-dn: ou=400010,dc=crypto,dc=synrc,dc=com
+dn: ou=400010,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Сектор Галуа
 postalCode: 300040
 
-dn: ou=400020,dc=crypto,dc=synrc,dc=com
+dn: ou=400020,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Сектор модулярних форм
 postalCode: 300040
@@ -100,7 +100,7 @@ objectClass: organizationalUnit
 description: Відділ математичної верифікації
 postalCode: 200020
 
-dn: ou=300080,dc=release,dc=synrc,dc=com
+dn: ou=300080,dc=chat,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Відділ впровадження
 postalCode: 200020
