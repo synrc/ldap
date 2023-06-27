@@ -253,6 +253,27 @@ dn: ou=400070,dc=ldap,dc=synrc,dc=com
 dn: ou=400100,dc=mqtt,dc=synrc,dc=com
 dn: ou=300070,dc=research,dc=synrc,dc=com</code></figure>
     </section>
+        <section>
+           <h3>TLS ON</h3>
+
+           <figure><code>
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /usr/local/etc/openldap/sasl2/server.pem
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /usr/local/etc/openldap/sasl2/server.key
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
+</code></figure>
+
+        </section>
 
     <section>
        <h3>CREATE</h3>
@@ -274,6 +295,11 @@ $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code>
            <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
 
+        </section>
+        <section>
+           <h3>DELETE</h3>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
 
         </section>
         <section>
