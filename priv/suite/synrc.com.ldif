@@ -1,5 +1,59 @@
 # Synrc Telecom
 
+dn: dc=synrc,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+o: SYNRC
+dn: dc=ns,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ca,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ldap,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=mqtt,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=acc,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=fin,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=pm,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: uid=admin,dc=synrc,dc=com
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+uid: admin
+userPassword: secret
+
+dn: ou=People,dc=synrc,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
 dn: ou=100010,dc=synrc,dc=com
 objectClass: organizationalUnit
 description: Телекомунікаційна компанія SYNRC
