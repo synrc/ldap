@@ -272,6 +272,8 @@ replace: olcTLSCACertificateFile
 olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
 </code></figure>
 
+           <figure><code>ldapadd -x -D "cn=admin,cn=config" -w secret -c -f ssl-mac.ldif</code></figure>
+
         </section>
 
     <section>
@@ -279,21 +281,11 @@ olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
            <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f init.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add-exists.ldif</code></figure>
-        </section>
-        <section>
-           <h3>MODIFY</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
 $ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
-        </section>
-        <section>
-           <h3>DELETE</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
-
         </section>
         <section>
            <h3>DELETE</h3>
