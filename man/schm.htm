@@ -215,6 +215,9 @@ $ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com
         <section>
            <h3>TLS ON</h3>
 
+           <p>Use <b class=se>ssl.ldif</b> to enable <b class=se>ldaps:///</b> port <b>636</b>
+              in contrast to standard TCP port <b>839</b>.</p>
+
            <figure><code>dn: cn=config
 changetype: modify
 replace: olcTLSCertificateFile
@@ -231,7 +234,7 @@ replace: olcTLSCACertificateFile
 olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
 </code></figure>
 
-           <figure><code>ldapadd -x -D "cn=admin,cn=config" -w secret -c -f ssl-mac.ldif</code></figure>
+           <figure><code>$ldapadd -x -D "cn=admin,cn=config" -w secret -c -f ssl-mac.ldif</code></figure>
 
     </section>
         <section>
