@@ -16,11 +16,11 @@
 <main>
     <section>
 
-        <h3>LDIF SYNRC.COM</h3>
+        <h3>SYNRC.COM LDIF</h3>
 
         <p>Startup test-suite scripts to be runed as <b class=se>pupulate.sh</b>.</p>
 
-        <h4>SYNRC.COM.LDIF</h4>
+        <h4>LDIF SCHEMA</h4>
 
         <P>Admin and global directory of top-level acounts (ou=People).</p>
 
@@ -186,32 +186,9 @@ postalCode: 200020</code></figure>
     </section>
 
     <section>
-       <h3>CREATE</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f synrc.com.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add-exists.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
+       <h3>INSTANTIATE</h3>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f synrc.com.ldif</code></figure>
         </section>
-        <section>
-           <h3>DELETE</h3>
-           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
-$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
-
-        </section>
-        <section>
-           <h3>SEARCH</h3>
-           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config" -Y EXTERNAL -H ldapi:///
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
-$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
-$ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin</code></figure>
-
-    </section>
         <section>
            <h3>TLS ON</h3>
 
@@ -239,7 +216,16 @@ olcTLSCACertificateFile: /usr/local/etc/openldap/sasl2/caroot.pem
     </section>
         <section>
 
-        <h3>LDAP SYNRC.COM SEARCH CHECK</h4>
+        <h3>HEALTH CHECK</h4>
+
+        <P>Retrieve all.</p>
+
+           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config" -Y EXTERNAL -H ldapi:///
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
+$ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin</code></figure>
 
         <P>Admin and global directory of top-level organizational units (description).</p>
 
