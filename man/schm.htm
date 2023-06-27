@@ -1,0 +1,294 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" /><meta name="author" content="Maxim Sokhatsky" />
+<title>LDAP SCHEMA</title>
+<link rel="stylesheet" href="https://n2o.dev/blank.css" />
+<link rel="stylesheet" href="https://n2o.dev/zima.css" />
+<link rel="stylesheet" href="https://n2o.dev/pro/pro.css" />
+</head><body><nav>
+    <a href="https://erp.uno">ERP</a>
+    <a href="https://ldap.erp.uno">LDAP</a>
+    <a href="#" style="background:#ededed;">SCHEMA</a>
+</nav><header>
+    <a href="../index.html"> <img src="https://openmoji.org/data/color/svg/1F310.svg" /></a>
+    <h1>SCHEMA</h1>
+</header>
+<main>
+    <section>
+
+        <h3>LDIF SYNRC.COM</h3>
+
+        <p>Startup test-suite scripts to be runed as <b class=se>pupulate.sh</b>.</p>
+
+        <h4>SYNRC.COM.LDIF</h4>
+
+        <P>Admin and global directory of top-level acounts (ou=People).</p>
+
+           <figure><code>dn: dc=synrc,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ns,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ca,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=mqtt,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=crypto,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=doc,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=legal,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=acc,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=fin,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ldap,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=pm,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=research,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=release,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: uid=admin,dc=synrc,dc=com
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+uid: admin
+userPassword: secret
+
+dn: ou=People,dc=synrc,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=100010,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Телекомунікаційна компанія SYNRC
+postalCode: ROOT
+
+dn: ou=200010,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Адміністрація SYNRC
+postalCode: 100010
+
+dn: ou=300010,dc=acc,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ кадрів ACC
+postalCode: 100010
+
+dn: ou=300020,dc=fin,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ обліку фінансової діяльності FIN
+postalCode: 100010
+
+dn: ou=300030,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Юридичний відділ LEGAL
+postalCode: 100010
+
+dn: ou=200020,dc=pm,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Управління розробки PM
+postalCode: 100010
+
+dn: ou=300040,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ математичної криптографії N2O
+postalCode: 200020
+
+dn: ou=400010,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор Галуа
+postalCode: 300040
+
+dn: ou=400020,dc=crypto,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор модулярних форм
+postalCode: 300040
+
+dn: ou=300050,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ проектної документації TECH
+postalCode: 200020
+
+dn: ou=400030,dc=doc,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор документування DOC
+postalCode: 300050
+
+dn: ou=400040,dc=pm,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор управління проектами PM
+postalCode: 300050
+
+dn: ou=300060,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ розробки N2O.DEV
+postalCode: 200020
+
+dn: ou=400050,dc=chat,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки iOS CHAT Client
+postalCode: 300060
+
+dn: ou=400060,dc=chat,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки Erlang/OTP CHAT Server
+postalCode: 300060
+
+dn: ou=400070,dc=ldap,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки LDAP
+postalCode: 300060
+
+dn: ou=400080,dc=ca,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки CA
+postalCode: 300060
+
+dn: ou=400090,dc=ns,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки NS
+postalCode: 300060
+
+dn: ou=400100,dc=mqtt,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки MQTT
+postalCode: 300060
+
+dn: ou=300070,dc=research,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ математичної верифікації
+postalCode: 200020
+
+dn: ou=300080,dc=chat,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ впровадження
+postalCode: 200020</code></figure>
+
+        <h4>LDAP SEARCH CHECK</h4>
+
+        <P>Admin and global directory of top-level organizational units (description).</p>
+
+           <figure><code>$ ldapsearch -D "cn=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com" | grep "desc"
+description:: 0KLQtdC70LXQutC+0LzRg9C90ZbQutCw0YbRltC50L3QsCDQutC+0LzQv9Cw0L3R
+description:: 0JDQtNC80ZbQvdGW0YHRgtGA0LDRhtGW0Y8gU1lOUkM=
+description:: 0K7RgNC40LTQuNGH0L3QuNC5INCy0ZbQtNC00ZbQuyBMRUdBTA==
+description:: 0JLRltC00LTRltC7INC80LDRgtC10LzQsNGC0LjRh9C90L7RlyDQutGA0LjQv9GC
+description:: 0JLRltC00LTRltC7INC/0YDQvtC10LrRgtC90L7RlyDQtNC+0LrRg9C80LXQvdGC
+description:: 0JLRltC00LTRltC7INGA0L7Qt9GA0L7QsdC60LggTjJPLkRFVg==
+description:: 0KHQtdC60YLQvtGAINCT0LDQu9GD0LA=
+description:: 0KHQtdC60YLQvtGAINGA0L7Qt9GA0L7QsdC60LggQ0E=
+description:: 0KHQtdC60YLQvtGAINGA0L7Qt9GA0L7QsdC60LggTlM=
+description:: 0KPQv9GA0LDQstC70ZbQvdC90Y8g0YDQvtC30YDQvtCx0LrQuCBQTQ==
+description:: 0KHQtdC60YLQvtGAINGD0L/RgNCw0LLQu9GW0L3QvdGPINC/0YDQvtC10LrRgtCw
+description:: 0JLRltC00LTRltC7INC60LDQtNGA0ZbQsiBBQ0M=
+description:: 0KHQtdC60YLQvtGAINC00L7QutGD0LzQtdC90YLRg9Cy0LDQvdC90Y8gRE9D
+description:: 0JLRltC00LTRltC7INC+0LHQu9GW0LrRgyDRhNGW0L3QsNC90YHQvtCy0L7RlyDQ
+description:: 0KHQtdC60YLQvtGAINGA0L7Qt9GA0L7QsdC60LggTERBUA==
+description:: 0KHQtdC60YLQvtGAINGA0L7Qt9GA0L7QsdC60LggTVFUVA==
+description:: 0KHQtdC60YLQvtGAINC80L7QtNGD0LvRj9GA0L3QuNGFINGE0L7RgNC8
+description:: 0JLRltC00LTRltC7INC80LDRgtC10LzQsNGC0LjRh9C90L7RlyDQstC10YDQuNGE</code></figure>
+
+        <P>Admin and global directory of top-level organizational units (dc).</p>
+
+           <figure><code>$ ldapsearch -D "cn=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com" | grep "dn: ou="
+dn: ou=100010,dc=synrc,dc=com
+dn: ou=200010,dc=synrc,dc=com
+dn: ou=300030,dc=synrc,dc=com
+dn: ou=300040,dc=synrc,dc=com
+dn: ou=300050,dc=synrc,dc=com
+dn: ou=300060,dc=synrc,dc=com
+dn: ou=400010,dc=synrc,dc=com
+dn: ou=People,dc=synrc,dc=com
+dn: ou=400080,dc=ca,dc=synrc,dc=com
+dn: ou=400090,dc=ns,dc=synrc,dc=com
+dn: ou=200020,dc=pm,dc=synrc,dc=com
+dn: ou=400040,dc=pm,dc=synrc,dc=com
+dn: ou=300010,dc=acc,dc=synrc,dc=com
+dn: ou=400030,dc=doc,dc=synrc,dc=com
+dn: ou=300020,dc=fin,dc=synrc,dc=com
+dn: ou=400070,dc=ldap,dc=synrc,dc=com
+dn: ou=400100,dc=mqtt,dc=synrc,dc=com
+dn: ou=300070,dc=research,dc=synrc,dc=com</code></figure>
+    </section>
+
+    <section>
+       <h3>CREATE</h3>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f init.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f add-exists.ldif</code></figure>
+        </section>
+        <section>
+           <h3>MODIFY</h3>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-replace.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-add.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-del.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-multi.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-noobj.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f modify-dn.ldif</code></figure>
+        </section>
+        <section>
+           <h3>DELETE</h3>
+           <figure><code>$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
+$ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif</code></figure>
+
+
+        </section>
+        <section>
+           <h3>SEARCH</h3>
+           <figure><code>$ ldapsearch -D "cn=admin,cn=config" -w secret -b "cn=config" -Y EXTERNAL -H ldapi:///
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "(&(uid=*)(sn=Ton*))"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
+$ ldapsearch -D "uid=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=To*)' cn sn
+$ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin</code></figure>
+
+   <br><center>&dot;</center>
+
+       <br><center>&dot;</center>
+
+    </section>
+</main><footer>   <br><center>&dot;</center><br> 2005—2023 © Synrc Research Center
+</footer></body></html>
