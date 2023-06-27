@@ -1,0 +1,106 @@
+# Synrc Telecom
+
+dn: ou=100010,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Телекомунікаційна компанія SYNRC
+postalCode: ROOT
+
+dn: ou=200010,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Адміністрація SYNRC
+postalCode: 100010
+
+dn: ou=300010,dc=acc,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ кадрів ACC
+postalCode: 100010
+
+dn: ou=300020,dc=fin,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ обліку фінансової діяльності FIN
+postalCode: 100010
+
+dn: ou=300030,dc=legal,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Юридичний відділ LEGAL
+postalCode: 100010
+
+dn: ou=200020,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Управління розробки PM
+postalCode: 100010
+
+dn: ou=300040,dc=crypto,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ математичної криптографії CRYPTO
+postalCode: 200020
+
+dn: ou=400010,dc=crypto,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор Галуа
+postalCode: 300040
+
+dn: ou=400020,dc=crypto,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор модулярних форм
+postalCode: 300040
+
+dn: ou=300050,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ проектної документації TECH
+postalCode: 200020
+
+dn: ou=400030,dc=doc,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор документування DOC
+postalCode: 300050
+
+dn: ou=400040,dc=pm,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор управління проектами PM
+postalCode: 300050
+
+dn: ou=300060,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ розробки N2O.DEV
+postalCode: 200020
+
+dn: ou=400050,dc=chat,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки iOS CHAT Client
+postalCode: 300060
+
+dn: ou=400060,dc=chat,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки Erlang/OTP CHAT Server
+postalCode: 300060
+
+dn: ou=400070,dc=ldap,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки LDAP
+postalCode: 300060
+
+dn: ou=400080,dc=ca,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки CA
+postalCode: 300060
+
+dn: ou=400090,dc=ns,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки NS
+postalCode: 300060
+
+dn: ou=400100,dc=mqtt,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Сектор розробки MQTT
+postalCode: 300060
+
+dn: ou=300070,dc=research,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ математичної верифікації
+postalCode: 200020
+
+dn: ou=300080,dc=release,dc=synrc,dc=com
+objectClass: organizationalUnit
+description: Відділ впровадження
+postalCode: 200020

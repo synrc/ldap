@@ -1,9 +1,70 @@
+# SYNRC ROOT DC ORGANISATIONS
+
 dn: dc=synrc,dc=com
 objectClass: top
 objectClass: dcObject
 objectClass: organization
 o: SYNRC
-dc: synrc
+
+dn: dc=ns,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ca,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=mqtt,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=crypto,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=doc,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=legal,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=acc,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=fin,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=ldap,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=pm,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=research,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
+
+dn: dc=release,dc=synrc,dc=com
+objectClass: dcObject
+objectClass: organization
+o: SYNRC
 
 dn: uid=admin,dc=synrc,dc=com
 objectClass: top

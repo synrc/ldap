@@ -15,3 +15,5 @@ ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete.ldif
 ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f delete-noobj.ldif
 
 ldapadd -x -D "cn=admin,cn=config" -w secret -c -f ssl-mac.ldif
+
+ldapadd -x -D "cn=admin,dc=synrc,dc=com" -w secret -c -f erp.uno.ldif
