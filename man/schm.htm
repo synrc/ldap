@@ -229,7 +229,7 @@ $ ldapcompare -D "uid=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com
 
         <P>Admin and global directory of top-level organizational units (description).</p>
 
-           <figure><code>$ ldapsearch -D "cn=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com" | grep "desc"
+           <figure><code>$ ldapsearch -D "cn=admin,dc=synrc,dc=com" -w secret -b "dc=synrc,dc=com" "ou=*" | grep desc
 description:: 0KLQtdC70LXQutC+0LzRg9C90ZbQutCw0YbRltC50L3QsCDQutC+0LzQv9Cw0L3R
 description:: 0JDQtNC80ZbQvdGW0YHRgtGA0LDRhtGW0Y8gU1lOUkM=
 description:: 0K7RgNC40LTQuNGH0L3QuNC5INCy0ZbQtNC00ZbQuyBMRUdBTA==
