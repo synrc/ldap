@@ -1,7 +1,7 @@
 defmodule LDAP.TCP do
    require LDAP
 
-   def start(), do: :erlang.spawn(fn -> listen(389) end)
+   def start(), do: :erlang.spawn(fn -> listen(1489) end)
 
    def listen(port) do
        {:ok, socket} = :gen_tcp.listen(port,
@@ -20,17 +20,22 @@ defmodule LDAP.TCP do
    end
 
    def bind(no, socket, bindDN, {:simple, password}) do
+       :io.format 'BIND DN: ~p~n', [bindDN]
        response = LDAP."BindResponse"(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        answer(response, no, :bindResponse, socket)
    end
 
    def bind(no, socket, bindDN, _) do
        code = :authMethodNotSupported
+       :io.format 'BIND ERROR: ~p~n', [code]
        response = LDAP."BindResponse"(resultCode: code, matchedDN: bindDN, diagnosticMessage: 'ERROR')
        answer(response, no, :bindResponse, socket)
    end
 
-   def search(no, socket, bindDN, _scope, _sizeLimit, _filter, _attributes) do
+   def search(no, socket, bindDN, _scope, _sizeLimit, filter, attributes) do
+       :io.format 'SEARCH DN: ~p~n', [bindDN]
+       :io.format 'SEARCH Filter: ~p~n', [filter]
+       :io.format 'SEARCH Attr: ~p~n', [attributes]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        :lists.map(fn [cn: commonName, email: email] ->
           cn = {:'PartialAttribute', "cn", [commonName]}
@@ -42,28 +47,42 @@ defmodule LDAP.TCP do
        answer(resp, no, :searchResDone,socket)
    end
 
-   def modifydn(no, socket, dn, _newRDN, _deleteOldRDN) do
-       :io.format 'BIND DN: ~p~n', [dn]
+   def modifydn(no, socket, dn, newRDN, _deleteOldRDN) do
+       :io.format 'MOD RDN DN: ~p~n', [dn]
+       :io.format 'MOD RDN newRDN: ~p~n', [newRDN]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :modDNResponse, socket)
    end
 
-   def modify(no, socket, dn, _attributes) do
-       :io.format 'MODIFY DN: ~p~n', [dn]
+   def modify(no, socket, dn, attributes) do
+       :io.format 'MOD DN: ~p~n', [dn]
+       :io.format 'MOD Attr: ~p~n', [attributes]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :modifyResponse, socket)
    end
 
-   def compare(no, socket, dn, _assertion) do
-       :io.format 'COMPARE DN: ~p~n', [dn]
+   def compare(no, socket, dn, assertion) do
+       :io.format 'CMP DN: ~p~n', [dn]
+       :io.format 'CMP Assertion: ~p~n', [assertion]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :compareResponse, socket)
    end
 
-   def add(no, socket, dn, _attributes) do
+   def add(no, socket, dn, attributes) do
        :io.format 'ADD DN: ~p~n', [dn]
+       :io.format 'ADD Attr: ~p~n', [attributes]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :addResponse, socket)
    end
 
    def delete(no, socket, dn) do
        :io.format 'DEL DN: ~p~n', [dn]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :delResponse, socket)
    end
 
    def message(no, {:unbindRequest, _}, x),                    do: abandon(x)
-   def message(no, {:bindRequest, {_,_,newBindDN, creds}}, x), do: bind(no, x, newBindDN, creds)
+   def message(no, {:bindRequest, {_,_,newBindDN,creds}}, x),  do: bind(no, x, newBindDN, creds)
    def message(no, {:searchRequest, {_,b,s,_,l,_,_,f,a}}, x),  do: search(no, x, b, s, l, f, a)
    def message(no, {:modifyRequest, {_,dn,attributes}}, x),    do: modify(no, x, dn, attributes)
    def message(no, {:abandonRequest, _}, x),                   do: abandon(x)

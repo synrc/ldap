@@ -19,7 +19,7 @@ defmodule LDAP.Mixfile do
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ldap,
-      links: %{"GitHub" => "https://github.com/enterprizing/ldap"}
+      links: %{"GitHub" => "https://github.com/synrc/ldap"}
     ]
   end
 
@@ -33,7 +33,6 @@ defmodule LDAP.Mixfile do
 
   def deps() do
     [
-#      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev}
     ]
   end
