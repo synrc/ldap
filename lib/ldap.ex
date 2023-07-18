@@ -15,24 +15,28 @@ defmodule LDAP.TCP do
        accept(socket)
    end
 
-   def abandon(socket) do
+   def message(no, socket, {:abandonRequest, _}) do
        :gen_tcp.close(socket)
    end
 
-   def bind(no, socket, bindDN, {:simple, password}) do
+   def message(no, socket, {:unbindRequest, _}) do
+       :gen_tcp.close(socket)
+   end
+
+   def message(no, socket, {:bindRequest, {_,_,bindDN,{:simple, password}}}) do
        :io.format 'BIND DN: ~p~n', [bindDN]
        response = LDAP."BindResponse"(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        answer(response, no, :bindResponse, socket)
    end
 
-   def bind(no, socket, bindDN, _) do
+   def message(no, socket, {:bindRequest, {_,_,bindDN,creds}}) do
        code = :authMethodNotSupported
        :io.format 'BIND ERROR: ~p~n', [code]
        response = LDAP."BindResponse"(resultCode: code, matchedDN: bindDN, diagnosticMessage: 'ERROR')
        answer(response, no, :bindResponse, socket)
    end
 
-   def search(no, socket, bindDN, scope, _sizeLimit, filter, attributes) do
+   def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}) do
        :io.format 'SEARCH DN: ~p~n', [bindDN]
        :io.format 'SEARCH Scope: ~p~n', [scope]
        :io.format 'SEARCH Filter: ~p~n', [filter]
@@ -48,49 +52,40 @@ defmodule LDAP.TCP do
        answer(resp, no, :searchResDone,socket)
    end
 
-   def modifydn(no, socket, dn, newRDN, _deleteOldRDN) do
+   def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}) do
        :io.format 'MOD RDN DN: ~p~n', [dn]
-       :io.format 'MOD RDN newRDN: ~p~n', [newRDN]
+       :io.format 'MOD RDN newRDN: ~p~n', [rdn]
+       :io.format 'MOD RDN oldRDN: ~p~n', [old]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modDNResponse, socket)
    end
 
-   def modify(no, socket, dn, attributes) do
+   def message(no, socket, {:modifyRequest, {_,dn, attributes}}) do
        :io.format 'MOD DN: ~p~n', [dn]
        :io.format 'MOD Attr: ~p~n', [attributes]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modifyResponse, socket)
    end
 
-   def compare(no, socket, dn, assertion) do
+   def message(no, socket, {:compareRequest, {_,dn, assertion}}) do
        :io.format 'CMP DN: ~p~n', [dn]
        :io.format 'CMP Assertion: ~p~n', [assertion]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :compareResponse, socket)
    end
 
-   def add(no, socket, dn, attributes) do
+   def message(no, socket, {:addRequest, {_,dn, attributes}}) do
        :io.format 'ADD DN: ~p~n', [dn]
        :io.format 'ADD Attr: ~p~n', [attributes]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :addResponse, socket)
    end
 
-   def delete(no, socket, dn) do
+   def message(no, socket, {:delRequest, dn}) do
        :io.format 'DEL DN: ~p~n', [dn]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :delResponse, socket)
    end
-
-   def message(no, {:abandonRequest, _}, x),                   do: abandon(x)
-   def message(no, {:unbindRequest, _}, x),                    do: abandon(x)
-   def message(no, {:bindRequest, {_,_,dn,creds}}, x),         do: bind(no,x,dn,creds)
-   def message(no, {:searchRequest, {_,b,s,_,l,_,_,f,a}}, x),  do: search(no,x,b,s,l,f,a)
-   def message(no, {:modifyRequest, {_,dn,a}}, x),             do: modify(no,x,dn,a)
-   def message(no, {:addRequest, {_,dn,a}}, x),                do: add(no,x,dn,a)
-   def message(no, {:delRequest, dn}, x),                      do: delete(no,x,dn)
-   def message(no, {:modDNRequest, {_,dn,rdn,d,_}}, x),        do: modifydn(no,x,dn,rdn,d)
-   def message(no, {:compareRequest, {_,dn,a}}, x),            do: compare(no,x,dn,a)
 
    def answer(response, no, op, socket) do
        message = LDAP."LDAPMessage"(messageID: no, protocolOp: {op, response})
@@ -103,8 +98,8 @@ defmodule LDAP.TCP do
             {:ok, data} ->
                  case :'LDAP'.decode(:'LDAPMessage',data) do
                       {:ok,decoded} ->
-                          {:'LDAPMessage',no, payload, _} = decoded
-                          spawn(fn -> message(no, payload, socket) end)
+                          {:'LDAPMessage', no, payload, _} = decoded
+                          spawn(fn -> message(no, socket, payload) end)
                           loop(socket, dn)
                       {:error,_} -> :exit
                  end
