@@ -4,8 +4,8 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "8.6.2",
-      description: "LDAP Directory and Identity Server",
+      version: "8.6.3",
+      description: "LDAP  CXC 138 22 Directory Server",
       package: package(),
       elixir: "~> 1.7",
       deps: deps(),

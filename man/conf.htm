@@ -15,7 +15,35 @@
 </header><main>
     <section>
 
+<h3>LDAP.CONF</h3>
+
+<p><b class=se>/etc/ldap.conf</b> client configuration.</p>
+
+<figure><code>host synrc.com
+base dc=synrc,dc=com
+uri ldap://127.0.0.1/
+uri ldaps://127.0.0.1/
+uri ldapi:///ldap.synrc.com
+uri ldaps:///ldap.synrc.com
+ldap_version 3
+binddn cn=admin,dc=synrc,dc=com
+bindpw secret
+rootbinddn cn=admin,dc=synrc,dc=com
+pam_password md5
+ssl start_tls
+ssl on
+tls_checkpeer yes
+TLS_CACERT /usr/local/etc/openldap/sasl2/caroot.pem
+TLS_REQCERT allow
+
+</code></figure>
+
+</section>
+<section>
+
 <h3>LINUX</h3>
+
+<p>SLAPD server configuration.</p>
 
     <figure><code># /etc/ldap/ldap.conf
 
