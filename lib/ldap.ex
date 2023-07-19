@@ -41,8 +41,8 @@ defmodule LDAP.TCP do
        :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA temp_store = MEMORY;")
        :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA cache_size = 1000000;")
        :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA synchronous = 0;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA locking_mode = EXCLUSIVE;")
-       
+#       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA locking_mode = EXCLUSIVE;")
+
        {:ok, socket} = :gen_tcp.listen(port,
          [:binary, {:packet, 0}, {:active, false}, {:reuseaddr, true}])
        accept(socket,conn)
@@ -137,8 +137,8 @@ defmodule LDAP.TCP do
                 :lists.foldr(fn {:PartialAttribute, att, vals}, acc ->
                      :lists.map(fn val -> [hash(qdn(dn)),att,val] end, vals) ++ acc end, [], attributes)
                 {_,patt} = :lists.foldr(fn [d,a,v], {acc,res}  -> {acc + 3, res ++ case res do [] -> [] ; _ -> ',' end
-                        ++ :io_lib.format('(NULL,?~p,?~p,?~p)',[acc+1,acc+2,acc+3])} end, {0,[]}, normalized)
-                {:ok, statement} = Exqlite.Sqlite3.prepare(db, 'insert into ldap (uid,rdn,att,val) values ' ++ patt ++ '')
+                        ++ :io_lib.format('(?~p,?~p,?~p)',[acc+1,acc+2,acc+3])} end, {0,[]}, normalized)
+                {:ok, statement} = Exqlite.Sqlite3.prepare(db, 'insert into ldap (rdn,att,val) values ' ++ patt ++ '')
                 :ok = Exqlite.Sqlite3.bind(db, statement, :lists.flatten(normalized))
                 :done = Exqlite.Sqlite3.step(db, statement)
 #                :io.format 'ADD DN: ~p~n', [dn]

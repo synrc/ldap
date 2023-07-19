@@ -26,7 +26,7 @@ defmodule LDAP.Mixfile do
 
   def application() do
     [
-      mod: {:eds_app, []},
+      mod: {LDAP, []},
       extra_applications: [:eldap]
     ]
   end
