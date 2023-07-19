@@ -33,7 +33,8 @@ defmodule LDAP.Mixfile do
 
   def deps() do
     [
-      {:ex_doc, "~> 0.11", only: :dev}
+      {:ex_doc, "~> 0.11", only: :dev},
+      {:exqlite, "~> 0.13.14"}
     ]
   end
 end
