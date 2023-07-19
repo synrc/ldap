@@ -3,7 +3,7 @@ defmodule LDAP.Test do
 
   def testConnection() do
       {:ok, conn} = :eldap.open(['127.0.0.1'], [{:port, 636}, {:ssl, true}])
-      :eldap.start_tls(conn, [])
+#      :eldap.start_tls(conn, [])
       :ok = :eldap.simple_bind(conn, 'cn=admin,dc=synrc,dc=com', 'secret')
       filter = :eldap.and([ :eldap.substrings('cn',[{:any, '100000'}]) ])
       scope = :wholeSubtree
@@ -16,23 +16,29 @@ defmodule LDAP.Test do
   end
 
   def loop1M() do
-      :lists.map(fn i -> create(i) end, :lists.seq(1,1_000_000))
+      :lists.map(fn i -> create(i) end, :lists.seq(1,500))
   end
 
   def create(no0) do
-      {:ok, conn} = :eldap.open(['127.0.0.1'], [{:port, 636}, {:ssl, true}])
-      :eldap.start_tls(conn, [])
+#      LDAP.TCP.start
+#      :timer.sleep(500)
+      {:ok, conn} = :eldap.open(['127.0.0.1'], [{:port, 1489}])
+#      {:ok, conn} = :eldap.open(['127.0.0.1'], [{:port, 636}, {:ssl, true}])
+#      :eldap.start_tls(conn, [])
       :eldap.simple_bind(conn, 'cn=admin,dc=synrc,dc=com', 'secret')
+      case rem(no0,100) do
+           0 -> :io.format 'Client bind: ~p~n', [no0]
+           _ -> :ok end
       no = case no0 do x when is_integer(x) -> :erlang.integer_to_list(x) ; _ -> :io_lib.format('~s',[no0]) end
       name = 'user_' ++ no
-      res = :eldap.add(conn, 'cn='++name++', ou=People, dc=synrc, dc=com',
+      {time,res} = :timer.tc(fn -> :eldap.add(conn, 'cn='++name++', ou=People, dc=synrc, dc=com',
        [{ 'objectClass', ['person','inetorgperson']},
         { 'givenName', ['givenName ' ++ no]},
         { 'cn', [name]},
         { 'sn', ['surname ' ++ no]},
         { 'telephoneNumber', ['+380670001122']}]
-      )
-      :io.format 'Create: ~p~n', [res]
+      ) end)
+#      :io.format 'Time: ~p~n', [time]
       :eldap.close(conn)
   end
 
