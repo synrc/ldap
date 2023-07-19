@@ -1,7 +1,7 @@
 defmodule LDAP.TCP do
    require LDAP
 
-   def hash(x), do: :binary.encode_hex(:crypto.hash(:md5,x))
+   def hash(x), do: :base64.encode(:crypto.hash(:md5,x))
    def code(), do: :binary.encode_hex(:crypto.strong_rand_bytes(8))
    def replace(s,a,b), do: :re.replace(s,a,b,[:global,{:return,:list}])
 
@@ -118,7 +118,7 @@ defmodule LDAP.TCP do
    def message(no, socket, {:addRequest, {_,dn, attributes}}, db) do
 #       :io.format 'ADD REQ: ~p~n', [dn]
       {:ok, statement} = Exqlite.Sqlite3.prepare(db, "select rdn, att, val from ldap where rdn = ?1")
-      Exqlite.Sqlite3.bind(db, statement, [dn])
+      Exqlite.Sqlite3.bind(db, statement, [hash(qdn(dn))])
       case Exqlite.Sqlite3.step(db, statement) do
             {:row, _} ->
 #                :io.format 'ADD ERROR: ~p~n', [dn]
