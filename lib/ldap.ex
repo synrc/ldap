@@ -1,7 +1,8 @@
 defmodule LDAP.TCP do
    require LDAP
 
-   def hash(x), do: :base64.encode(:crypto.hash(:md5,x))
+#   def hash(x), do: :base64.encode(:crypto.hash(:md5,x))
+   def hash(x), do: x
    def code(), do: :binary.encode_hex(:crypto.strong_rand_bytes(8))
    def replace(s,a,b), do: :re.replace(s,a,b,[:global,{:return,:list}])
 
