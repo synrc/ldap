@@ -11,13 +11,7 @@ defmodule LDAP.TCP do
 
    def listen(port,path) do
        {:ok, conn} = Exqlite.Sqlite3.open(path)
-       Exqlite.Sqlite3.execute(conn,
-          "begin;" <>
-          "create table ldap (rdn text, att text, val binary);" <>
-          "create index ldap_rdn on ldap (rdn);" <>
-          "create index ldap_att on ldap (att);" <>
-          "create index ldap_val on ldap (val);" <>
-          "commit;")
+       Exqlite.Sqlite3.execute(conn, "create table ldap (uid integer primary key, rdn text, att text, val binary)")
        {:ok, statement} = Exqlite.Sqlite3.prepare(conn, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
        :ok = Exqlite.Sqlite3.bind(conn, statement, ["cn=admin,dc=synrc,dc=com","cn","admin"])
        :done = Exqlite.Sqlite3.step(conn, statement)
@@ -116,7 +110,7 @@ defmodule LDAP.TCP do
             :done ->
                 :lists.map(fn {:PartialAttribute, att, vals} ->
                     :lists.map(fn val ->
-                        {:ok, statement} = Exqlite.Sqlite3.prepare(db, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
+                        {:ok, statement} = Exqlite.Sqlite3.prepare(db, "insert into ldap (id,rdn,att,val) values (NULL,?1,?2,?3)")
                         :ok = Exqlite.Sqlite3.bind(db, statement, [dn,att,val])
                         :done = Exqlite.Sqlite3.step(db, statement)
                      end, vals)

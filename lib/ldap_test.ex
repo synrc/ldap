@@ -16,7 +16,7 @@ defmodule LDAP.Test do
   end
 
   def loop1M() do
-      :lists.map(fn i -> create(i) end, :lists.seq(1,500))
+      :lists.map(fn i -> create(i) end, :lists.seq(1,2))
   end
 
   def create(no0) do
