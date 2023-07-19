@@ -6,13 +6,14 @@ defmodule LDAP.TCP do
 
    def qdn(rdn) do
        trim = replace(:erlang.binary_to_list(rdn)," ",[])
-       '/'++:string.join(:lists.reverse(:string.tokens(trim,',')),'/')
+       :erlang.iolist_to_binary('/'++:string.join(:lists.reverse(:string.tokens(trim,',')),'/'))
    end
 
    def collect(db,st,:done, acc), do: acc
    def collect(db,st,{:row,x}, acc), do: collect(db,st,Exqlite.Sqlite3.step(db,st),[x|acc])
 
-   def list(db) do
+   def list(name) do
+       {:ok, db} = Exqlite.Sqlite3.open name
        {:ok, st} = Exqlite.Sqlite3.prepare(db, "select * from ldap")
        res = Exqlite.Sqlite3.step(db,st)
        collect(db,st,res,[])
@@ -123,15 +124,15 @@ defmodule LDAP.TCP do
                 resp = LDAP.'LDAPResult'(resultCode: :entryAlreadyExists, matchedDN: dn, diagnosticMessage: 'ERROR')
                 answer(resp, no, :addResponse, socket)
             :done ->
-                :lists.map(fn {:PartialAttribute, att, vals} ->
-                    :lists.map(fn val ->
-                        {:ok, statement} = Exqlite.Sqlite3.prepare(db, "insert into ldap (uid,rdn,att,val) values (NULL,?1,?2,?3)")
-                        :ok = Exqlite.Sqlite3.bind(db, statement, [qdn(dn),att,val])
-                        :done = Exqlite.Sqlite3.step(db, statement)
-                     end, vals)
-                end, attributes)
+                normalized =
+                :lists.foldr(fn {:PartialAttribute, att, vals}, acc ->
+                     :lists.map(fn val -> [qdn(dn),att,val] end, vals) ++ acc end, [], attributes)
+                {_,patt} = :lists.foldr(fn [d,a,v], {acc,res}  -> {acc + 3, res ++ case res do [] -> [] ; _ -> ',' end
+                        ++ :io_lib.format('(NULL,?~p,?~p,?~p)',[acc+1,acc+2,acc+3])} end, {0,[]}, normalized)
+                {:ok, statement} = Exqlite.Sqlite3.prepare(db, 'insert into ldap (uid,rdn,att,val) values ' ++ patt)
+                :ok = Exqlite.Sqlite3.bind(db, statement, :lists.flatten(normalized))
+                :done = Exqlite.Sqlite3.step(db, statement)
 #                :io.format 'ADD DN: ~p~n', [dn]
-#                :io.format 'ADD Attr: ~p~n', [attributes]
                 resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
                 answer(resp, no, :addResponse, socket)
        end

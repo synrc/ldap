@@ -16,7 +16,12 @@ defmodule LDAP.Test do
   end
 
   def loop1M() do
-      :lists.map(fn i -> create(i) end, :lists.seq(1,2))
+      :lists.map(fn i -> create(i) end, :lists.seq(1,1_000_000))
+  end
+
+  def timestamp() do
+      {m, s, u} = :os.timestamp()
+      (m*1000000 + s)*1000 + Float.floor(u/1000)
   end
 
   def create(no0) do
@@ -27,7 +32,7 @@ defmodule LDAP.Test do
 #      :eldap.start_tls(conn, [])
       :eldap.simple_bind(conn, 'cn=admin,dc=synrc,dc=com', 'secret')
       case rem(no0,100) do
-           0 -> :io.format 'Client bind: ~p~n', [no0]
+           0 -> :io.format 'Client bind: ~p ~p~n', [no0,timestamp()]
            _ -> :ok end
       no = case no0 do x when is_integer(x) -> :erlang.integer_to_list(x) ; _ -> :io_lib.format('~s',[no0]) end
       name = 'user_' ++ no
