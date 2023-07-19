@@ -1,6 +1,7 @@
 defmodule LDAP.TCP do
    require LDAP
 
+   def hash(x), do: :binary.encode_hex(:crypto.hash(:md5,x))
    def code(), do: :binary.encode_hex(:crypto.strong_rand_bytes(8))
    def replace(s,a,b), do: :re.replace(s,a,b,[:global,{:return,:list}])
 
@@ -10,7 +11,7 @@ defmodule LDAP.TCP do
    end
 
    def collect(db,st,:done, acc), do: acc
-   def collect(db,st,{:row,x}, acc), do: collect(db,st,Exqlite.Sqlite3.step(db,st),[x|acc])
+   def collect(db,st,{:row,x}, acc), do: collect(db,st,Exqlite.Sqlite3.step(db,st),[:erlang.list_to_tuple(x)|acc])
 
    def list(name) do
        {:ok, db} = Exqlite.Sqlite3.open name
@@ -29,10 +30,10 @@ defmodule LDAP.TCP do
        {:ok, conn} = Exqlite.Sqlite3.open(path)
        Exqlite.Sqlite3.execute(conn, "create table ldap (uid integer primary key, rdn text, att text, val binary)")
        {:ok, statement} = Exqlite.Sqlite3.prepare(conn, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
-       :ok = Exqlite.Sqlite3.bind(conn, statement, [qdn("cn=admin,dc=synrc,dc=com"),"cn","admin"])
+       :ok = Exqlite.Sqlite3.bind(conn, statement, [hash(qdn("cn=admin,dc=synrc,dc=com")),"cn","admin"])
        :done = Exqlite.Sqlite3.step(conn, statement)
        {:ok, statement} = Exqlite.Sqlite3.prepare(conn, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
-       :ok = Exqlite.Sqlite3.bind(conn, statement, [qdn("cn=admin,dc=synrc,dc=com"),"rootpw","secret"])
+       :ok = Exqlite.Sqlite3.bind(conn, statement, [hash(qdn("cn=admin,dc=synrc,dc=com")),"rootpw","secret"])
        :done = Exqlite.Sqlite3.step(conn, statement)
        {:ok, socket} = :gen_tcp.listen(port,
          [:binary, {:packet, 0}, {:active, false}, {:reuseaddr, true}])
@@ -53,7 +54,7 @@ defmodule LDAP.TCP do
    def message(no, socket, {:bindRequest, {_,_,bindDN,{:simple, password}}}, db) do
        {:ok, statement} = Exqlite.Sqlite3.prepare(db,
            "select rdn, att from ldap where rdn = ?1 and att = 'rootpw' and val = ?2")
-       Exqlite.Sqlite3.bind(db, statement, [qdn(bindDN),password])
+       Exqlite.Sqlite3.bind(db, statement, [hash(qdn(bindDN)),password])
        case Exqlite.Sqlite3.step(db, statement) do
            :done ->  code = :invalidCredentials
 #                     :io.format 'BIND Error: ~p~n', [code]
@@ -126,7 +127,7 @@ defmodule LDAP.TCP do
             :done ->
                 normalized =
                 :lists.foldr(fn {:PartialAttribute, att, vals}, acc ->
-                     :lists.map(fn val -> [qdn(dn),att,val] end, vals) ++ acc end, [], attributes)
+                     :lists.map(fn val -> [hash(qdn(dn)),att,val] end, vals) ++ acc end, [], attributes)
                 {_,patt} = :lists.foldr(fn [d,a,v], {acc,res}  -> {acc + 3, res ++ case res do [] -> [] ; _ -> ',' end
                         ++ :io_lib.format('(NULL,?~p,?~p,?~p)',[acc+1,acc+2,acc+3])} end, {0,[]}, normalized)
                 {:ok, statement} = Exqlite.Sqlite3.prepare(db, 'insert into ldap (uid,rdn,att,val) values ' ++ patt)
