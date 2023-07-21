@@ -29,7 +29,7 @@ defmodule LDAP.TCP do
 
    def initDB(path) do
        {:ok, conn} = open(path)
-       :io.format 'SYNRC LDAP Instance: ~p Connection: ~p~n', [path,conn]
+       :logger.info 'SYNRC LDAP Instance: ~p Connection: ~p', [path,conn]
        execute(conn, "create table ldap (rdn text,att text,val binary)")
        :ok = execute(conn, "PRAGMA journal_mode = OFF;")
        :ok = execute(conn, "PRAGMA temp_store = MEMORY;")
@@ -95,23 +95,32 @@ defmodule LDAP.TCP do
    end
 
    def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
-       :logger.info 'MOD RDN DN: ~p~n', [dn]
-       :logger.info 'MOD RDN newRDN: ~p~n', [rdn]
-       :logger.info 'MOD RDN oldRDN: ~p~n', [old]
+       :logger.info 'MOD RDN DN: ~p', [dn]
+       :logger.info 'MOD RDN newRDN: ~p', [rdn]
+       :logger.info 'MOD RDN oldRDN: ~p', [old]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modDNResponse, socket)
    end
 
    def message(no, socket, {:modifyRequest, {_,dn, attributes}}, db) do
-       :logger.info 'MOD DN: ~p~n', [dn]
-       modifyDN(db, dn, attributes)
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
-       answer(resp, no, :modifyResponse, socket)
+      {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
+      bind(db, statement, [hash(qdn(dn))])
+      case step(db, statement) do
+           {:row, _} -> :logger.info 'MOD DN: ~p', [dn]
+                        modifyDN(db, dn, attributes)
+                        resp = LDAP.'LDAPResult'(resultCode: :success,
+                            matchedDN: dn, diagnosticMessage: 'OK')
+                        answer(resp, no, :modifyResponse, socket)
+           :done ->     :logger.info 'MOD ERROR: ~p', [dn]
+                        resp = LDAP.'LDAPResult'(resultCode: :noSuchObject,
+                           matchedDN: dn, diagnosticMessage: 'ERROR')
+                        answer(resp, no, :modifyResponse, socket)
+      end
    end
 
    def message(no, socket, {:compareRequest, {_,dn, assertion}}, db) do
-       :logger.info 'CMP DN: ~p~n', [dn]
-       :logger.info 'CMP Assertion: ~p~n', [assertion]
+       :logger.info 'CMP DN: ~p', [dn]
+       :logger.info 'CMP Assertion: ~p', [assertion]
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :compareResponse, socket)
    end
@@ -121,19 +130,22 @@ defmodule LDAP.TCP do
       bind(db, statement, [hash(qdn(dn))])
       case step(db, statement) do
             {:row, _} ->
-                :logger.info 'ADD ERROR: ~p~n', [dn]
-                resp = LDAP.'LDAPResult'(resultCode: :entryAlreadyExists, matchedDN: dn, diagnosticMessage: 'ERROR')
+                :logger.info 'ADD ERROR: ~p', [dn]
+                resp = LDAP.'LDAPResult'(resultCode: :entryAlreadyExists,
+                       matchedDN: dn, diagnosticMessage: 'ERROR')
                 answer(resp, no, :addResponse, socket)
             :done ->
                 createDN(db, dn, attributes)
-                :logger.info 'ADD DN: ~p ~p', [dn,attributes]
-                resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+                :logger.info 'ADD DN: ~p', [dn]
+                resp = LDAP.'LDAPResult'(resultCode: :success,
+                       matchedDN: dn, diagnosticMessage: 'OK')
                 answer(resp, no, :addResponse, socket)
        end
    end
 
-   def message(no, socket, {:delRequest, dn}, sql) do
+   def message(no, socket, {:delRequest, dn}, db) do
        :logger.info 'DEL DN: ~p', [dn]
+       deleteDN(db, dn)
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :delResponse, socket)
    end
@@ -149,7 +161,7 @@ defmodule LDAP.TCP do
    def message(no, socket, {:unbindRequest, _}, db), do: :gen_tcp.close(socket)
 
    def message(no, socket, msg, sql) do
-       :logger.info 'Invalid LDAP Message: ~p~n', [msg]
+       :logger.info 'Invalid LDAP Message: ~p', [msg]
        :gen_tcp.close(socket)
    end
 
@@ -171,18 +183,21 @@ defmodule LDAP.TCP do
 
    def modifyAdd(db, dn, {_,att,[val]}) do
        {:ok, st} = prepare(db, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
+       :logger.info 'MOD ADD RDN: ~p', [hash(qdn(dn))]
        bind(db, st, [hash(qdn(dn)),att,val])
        step(db,st)
    end
 
    def modifyReplace(db, dn, {_,att,[val]}) do
        {:ok, st} = prepare(db, "update ldap set val = ?1 where rdn = ?2 and att = ?3")
+       :logger.info 'MOD REPLACE RDN: ~p', [hash(qdn(dn))]
        bind(db, st, [val,hash(qdn(dn)),att])
        step(db,st)
    end
 
    def modifyDelete(db, dn, {_,att,_}) do
        {:ok, st} = prepare(db, "delete from ldap where rdn = ?1 and att = ?2")
+       :logger.info 'MOD DEL RDN: ~p', [hash(qdn(dn))]
        bind(db, st, [hash(qdn(dn)),att])
        res = step(db,st)
        collect(db,st,res,[])
@@ -217,7 +232,7 @@ defmodule LDAP.TCP do
                           message(no, socket, payload, db)
                           loop(socket, db)
                       {:error,reason} ->
-                         :logger.error 'ERROR: ~p~n', [reason]
+                         :logger.error 'ERROR: ~p', [reason]
                         :exit
                  end
             {:error, :closed} -> :exit
