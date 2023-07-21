@@ -149,22 +149,24 @@ defmodule LDAP.TCP do
        :logger.info 'SEARCH Filter: ~p', [filter]
        :logger.info 'SEARCH Attr: ~p', [attributes]
 
-       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-         
-           case scope do
-             :baseObject ->
-
-            [node("ou=schema", [
+       schema = [
+            node("ou=schema", [
                 attr("ou",["schema"]),
+                attr("dn",["ou=schema"]),
                 attr("objectClass",['organizationalUnit','top'])])
             ]
 
-             :singleLevel ->
-               []
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
+         
+           case scope do
+             :wholeSubtree -> schema
+             :baseObject -> schema
+             :singleLevel -> []
             end
          )
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "dc=synrc,dc=com", diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
