@@ -207,16 +207,6 @@ defmodule LDAP.TCP do
        answer(resp, no, :searchResDone,socket)
    end
 
-
-
-   def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
-       :logger.info 'MOD RDN DN: ~p', [dn]
-       :logger.info 'MOD RDN newRDN: ~p', [rdn]
-       :logger.info 'MOD RDN oldRDN: ~p', [old]
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
-       answer(resp, no, :modDNResponse, socket)
-   end
-
    def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
        :logger.info 'SEARCH DN: ~p', [bindDN]
        :logger.info 'SEARCH Scope: ~p', [scope]
@@ -227,9 +217,18 @@ defmodule LDAP.TCP do
          [
          ])
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "dc=synrc,dc=com", diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
+
+   def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
+       :logger.info 'MOD RDN DN: ~p', [dn]
+       :logger.info 'MOD RDN newRDN: ~p', [rdn]
+       :logger.info 'MOD RDN oldRDN: ~p', [old]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :modDNResponse, socket)
+   end
+
 
    def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
        :logger.info 'MOD RDN DN: ~p', [dn]
