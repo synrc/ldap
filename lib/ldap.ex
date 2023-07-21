@@ -86,10 +86,14 @@ defmodule LDAP.TCP do
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
        :lists.map(fn [cn: commonName, email: email] ->
           cn = {:'PartialAttribute', "cn", [commonName]}
+          dn = {:'PartialAttribute', "dn", ["cn=" <> commonName <> ",ou=people,dc=synrc,dc=com"]}
+          uid = {:'PartialAttribute', "uid", [code()]}
           mail = {:'PartialAttribute', "mail", [email]}
-          response = {:'SearchResultEntry', commonName, [cn,mail]}
+          person = {:'PartialAttribute', "objectClass", ["inetOrgPerson"]}
+          account = {:'PartialAttribute', "objectClass", ["posixAccount"]}
+          response = {:'SearchResultEntry', commonName, [uid,cn,mail,person,account]}
           answer(response,no,:searchResEntry,socket)
-       end, [[cn: "tonpa", email: 'tonpa@n2o.dev'],
+       end, [#[cn: "tonpa", email: 'tonpa@n2o.dev'],
              [cn: "rocco", email: 'rocco@n2o.dev']])
        answer(resp, no, :searchResDone,socket)
    end
