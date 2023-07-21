@@ -24,17 +24,17 @@ defmodule LDAP.TCP do
 
    def start() do
        instance = code()
-       :io.format 'SYNRC LDAP Instance: ~p~n', [instance]
        :erlang.spawn(fn -> listen(1489,instance) end)
    end
 
    def initDB(path) do
-       {:ok, conn} = Exqlite.Sqlite3.open(path)
-       Exqlite.Sqlite3.execute(conn, "create table ldap (uid integer primary key,rdn text,att text,val binary)")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA journal_mode = OFF;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA temp_store = MEMORY;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA cache_size = 1000000;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA synchronous = 0;")
+       {:ok, conn} = open(path)
+       :io.format 'SYNRC LDAP Instance: ~p Connection: ~p~n', [path,conn]
+       execute(conn, "create table ldap (rdn text,att text,val binary)")
+       :ok = execute(conn, "PRAGMA journal_mode = OFF;")
+       :ok = execute(conn, "PRAGMA temp_store = MEMORY;")
+       :ok = execute(conn, "PRAGMA cache_size = 1000000;")
+       :ok = execute(conn, "PRAGMA synchronous = 0;")
        conn
    end
 
@@ -50,11 +50,6 @@ defmodule LDAP.TCP do
        {:ok, fd} = :gen_tcp.accept(socket)
        :erlang.spawn(fn -> loop(fd, conn) end)
        accept(socket,conn)
-   end
-
-   def message(no, socket, {:bindRequest, {_,_,"cn=admin,dc=synrc,dc=com" = dn,{:simple, "secret"}}}, db) do
-       response = LDAP."BindResponse"(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
-       answer(response, no, :bindResponse, socket)
    end
 
    def message(no, socket, {:bindRequest, {_,_,bindDN,{:simple, password}}}, db) do
@@ -109,7 +104,7 @@ defmodule LDAP.TCP do
 
    def message(no, socket, {:modifyRequest, {_,dn, attributes}}, db) do
        :logger.info 'MOD DN: ~p~n', [dn]
-       :logger.info 'MOD Attr: ~p~n', [attributes]
+       modifyDN(db, dn, attributes)
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modifyResponse, socket)
    end
@@ -122,10 +117,9 @@ defmodule LDAP.TCP do
    end
 
    def message(no, socket, {:addRequest, {_,dn, attributes}}, db) do
-       :logger.info 'ADD REQ: ~p~n', [dn]
       {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
       bind(db, statement, [hash(qdn(dn))])
-      case Exqlite.Sqlite3.step(db, statement) do
+      case step(db, statement) do
             {:row, _} ->
                 :logger.info 'ADD ERROR: ~p~n', [dn]
                 resp = LDAP.'LDAPResult'(resultCode: :entryAlreadyExists, matchedDN: dn, diagnosticMessage: 'ERROR')
@@ -170,6 +164,40 @@ defmodule LDAP.TCP do
        res ++ case res do [] -> [] ; _ -> ',' end
    end
 
+   def modifyDN(db, dn, attributes), do:
+       :lists.map(fn {_, :add, x}     -> modifyAdd(db,dn,x)
+                     {_, :replace, x} -> modifyReplace(db,dn,x)
+                     {_, :delete, x}  -> modifyDelete(db,dn,x) end, attributes)
+
+   def modifyAdd(db, dn, {_,att,[val]}) do
+       {:ok, st} = prepare(db, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
+       bind(db, st, [hash(qdn(dn)),att,val])
+       step(db,st)
+   end
+
+   def modifyReplace(db, dn, {_,att,[val]}) do
+       {:ok, st} = prepare(db, "update ldap set val = ?1 where rdn = ?2 and att = ?3")
+       bind(db, st, [val,hash(qdn(dn)),att])
+       step(db,st)
+   end
+
+   def modifyDelete(db, dn, {_,att,_}) do
+       {:ok, st} = prepare(db, "delete from ldap where rdn = ?1 and att = ?2")
+       bind(db, st, [hash(qdn(dn)),att])
+       res = step(db,st)
+       collect(db,st,res,[])
+   end
+
+   def deleteDN(db, dn) do
+       {:ok, st} = prepare(db, "delete from ldap where rdn = ?1")
+       bind(db, st, [hash(qdn(dn))])
+       res = step(db,st)
+       collect(db,st,res,[])
+   end
+
+   def compareDN(db, dn, assertions) do
+   end
+
    def createDN(db, dn, attributes) do
        norm  = :lists.foldr(fn {:PartialAttribute, att, vals}, acc ->
                :lists.map(fn val -> [hash(qdn(dn)),att,val] end, vals) ++ acc end, [], attributes)
@@ -180,27 +208,17 @@ defmodule LDAP.TCP do
        :done = step(db, statement)
    end
 
-   def initDB(path) do
-       {:ok, conn} = Exqlite.Sqlite3.open(path)
-       :ok = Exqlite.Sqlite3.execute(conn, "create table ldap (uid integer primary key,rdn text,att text,val binary)")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA journal_mode = OFF;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA temp_store = MEMORY;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA cache_size = 1000000;")
-       :ok = Exqlite.Sqlite3.execute(conn, "PRAGMA synchronous = 0;")
-       conn
-   end
-
    def loop(socket, db) do
        case :gen_tcp.recv(socket, 0) do
             {:ok, data} ->
                  case :'LDAP'.decode(:'LDAPMessage',data) do
                       {:ok,decoded} ->
                           {:'LDAPMessage', no, payload, _} = decoded
-                          :erlang.spawn(fn ->
-                              message(no, socket, payload, db)
-                          end)
+                          message(no, socket, payload, db)
                           loop(socket, db)
-                      {:error,_} -> :exit
+                      {:error,reason} ->
+                         :logger.error 'ERROR: ~p~n', [reason]
+                        :exit
                  end
             {:error, :closed} -> :exit
        end
