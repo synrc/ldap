@@ -4,6 +4,7 @@ defmodule LDAP.TCP do
 
    def hash(x),        do: x
    def attr(k,v),      do: {:PartialAttribute, k, v}
+   def node(dn,attrs), do: {:SearchResultEntry, dn, attrs}
    def string(rdn),    do: :erlang.binary_to_list(rdn)
    def binary(rdn),    do: :erlang.iolist_to_binary(rdn)
    def tok(rdn, del),  do: :string.tokens(rdn, del)
@@ -41,6 +42,8 @@ defmodule LDAP.TCP do
    def listen(port,path) do
        conn = initDB(path)
        createDN(conn, "cn=admin,dc=synrc,dc=com", [attr("rootpw",["secret"]),attr("cn",["admin"])])
+       createDN(conn, "dc=synrc,dc=com", [attr("dc",["synrc"]),attr("objectClass",["top","domain"])])
+       createDN(conn, "ou=schema", [attr("ou",["schema"]),attr("objectClass",["top","domain"])])
        {:ok, socket} = :gen_tcp.listen(port,
          [:binary, {:packet, 0}, {:active, false}, {:reuseaddr, true}])
        accept(socket,conn)
@@ -78,23 +81,151 @@ defmodule LDAP.TCP do
        answer(response, no, :bindResponse, socket)
    end
 
+   def message(no, socket, {:searchRequest, {_,"",scope,_,limit,_,_,filter,attributes}}, db) do
+       :logger.info 'DSE Scope: ~p', [scope]
+       :logger.info 'DSE Filter: ~p', [filter]
+       :logger.info 'DSE Attr: ~p', [attributes]
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
+         [ node("", [
+              attr("supportedLDAPVersion", ['3']),
+              attr("namingContexts", ['dc=synrc,dc=com','ou=schema']),
+              attr("supportedControl", ['1.3.6.1.4.1.4203.1.10.1']),
+              attr("supportedFeatures", ['1.3.6.1.1.14', '1.3.6.1.4.1.4203.1.5.1']),
+              attr("supportedExtensions", ['1.3.6.1.4.1.4203.1.11.3']),
+              attr("altServer", ['ldap.synrc.com']),
+              attr("subschemaSubentry", ['ou=schema']),
+              attr("vendorName", ['SYNRC LDAP']),
+              attr("vendorVersion", ['1.0']),
+              attr("supportedSASLMechanisms", ['SIMPLE']),
+              attr("objectClass", ['top','extensibleObject']),
+              attr("entryUUID", [code()])])])
+
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
+       answer(resp, no, :searchResDone,socket)
+   end
+
+   def message(no, socket, {:searchRequest, {_,"dc=synrc,dc=com",scope,_,limit,_,_,filter,attributes}}, db) do
+       bindDN = "dc=synrc,dc=com"
+       :logger.info 'SEARCH DN: ~p', [bindDN]
+       :logger.info 'SEARCH Scope: ~p', [scope]
+       :logger.info 'SEARCH Filter: ~p', [filter]
+       :logger.info 'SEARCH Attr: ~p', [attributes]
+
+       synrc = 
+            [node("dc=synrc,dc=com", [
+                attr("dc",["synrc"]),
+                attr("objectClass",['domain','top'])])
+            ]
+
+        users =
+            [node("cn=admin,dc=synrc,dc=com", [
+                attr("cn",["admin"]),
+                attr("uid",['1000']),
+                attr("objectClass",['inetOrgPerson','posixAccount'])]),
+
+            node("cn=rocco,dc=synrc,dc=com", [
+                attr("cn",["rocco"]),
+                attr("uid",['2000']),
+                attr("objectClass",['inetOrgPerson','posixAccount'])])]
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
+         
+           case scope do
+             :baseObject -> synrc
+             :singleLevel -> users
+             :wholeSubtree -> synrc ++ users
+
+           end)
+
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       answer(resp, no, :searchResDone,socket)
+   end
+
+   def message(no, socket, {:searchRequest, {_,"ou=schema",scope,_,limit,_,_,filter,attributes}}, db) do
+       bindDN = "ou=schema"
+       :logger.info 'SEARCH DN: ~p', [bindDN]
+       :logger.info 'SEARCH Scope: ~p', [scope]
+       :logger.info 'SEARCH Filter: ~p', [filter]
+       :logger.info 'SEARCH Attr: ~p', [attributes]
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
+         
+           case scope do
+             :baseObject ->
+
+            [node("ou=schema", [
+                attr("ou",["schema"]),
+                attr("objectClass",['organizationalUnit','top'])])
+            ]
+
+             :singleLevel ->
+               []
+            end
+         )
+
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "dc=synrc,dc=com", diagnosticMessage: 'OK')
+       answer(resp, no, :searchResDone,socket)
+   end
+
+   def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
+
+       :logger.info 'SEARCH DN: ~p', [bindDN]
+       :logger.info 'SEARCH Scope: ~p', [scope]
+       :logger.info 'SEARCH Filter: ~p', [filter]
+       :logger.info 'SEARCH Attr: ~p', [attributes]
+
+       admin =
+            [node("cn=admin,dc=synrc,dc=com", [
+                attr("cn",["admin"]),
+                attr("uid",['1000']),
+                attr("objectClass",['inetOrgPerson','posixAccount'])])]
+
+       rocco =
+            [node("cn=rocco,dc=synrc,dc=com", [
+                attr("cn",["rocco"]),
+                attr("uid",['2000']),
+                attr("objectClass",['inetOrgPerson','posixAccount'])])]
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end, 
+
+         case scope do
+            :baseObject ->
+                case bindDN do
+                   "cn=rocco,dc=synrc,dc=com" -> rocco
+                   "cn=admin,dc=synrc,dc=com" -> admin
+                end
+            _ -> []
+            
+         end
+
+       )
+
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       answer(resp, no, :searchResDone,socket)
+   end
+
+
+
+   def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
+       :logger.info 'MOD RDN DN: ~p', [dn]
+       :logger.info 'MOD RDN newRDN: ~p', [rdn]
+       :logger.info 'MOD RDN oldRDN: ~p', [old]
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
+       answer(resp, no, :modDNResponse, socket)
+   end
+
    def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
        :logger.info 'SEARCH DN: ~p', [bindDN]
        :logger.info 'SEARCH Scope: ~p', [scope]
        :logger.info 'SEARCH Filter: ~p', [filter]
        :logger.info 'SEARCH Attr: ~p', [attributes]
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
-       :lists.map(fn [cn: commonName, email: email] ->
-          cn = {:'PartialAttribute', "cn", [commonName]}
-          dn = {:'PartialAttribute', "dn", ["cn=" <> commonName <> ",ou=people,dc=synrc,dc=com"]}
-          uid = {:'PartialAttribute', "uid", [code()]}
-          mail = {:'PartialAttribute', "mail", [email]}
-          person = {:'PartialAttribute', "objectClass", ["inetOrgPerson"]}
-          account = {:'PartialAttribute', "objectClass", ["posixAccount"]}
-          response = {:'SearchResultEntry', commonName, [uid,cn,mail,person,account]}
-          answer(response,no,:searchResEntry,socket)
-       end, [#[cn: "tonpa", email: 'tonpa@n2o.dev'],
-             [cn: "rocco", email: 'rocco@n2o.dev']])
+
+       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
+         [
+         ])
+
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "dc=synrc,dc=com", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
@@ -105,6 +236,8 @@ defmodule LDAP.TCP do
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modDNResponse, socket)
    end
+
+
 
    def message(no, socket, {:modifyRequest, {_,dn, attributes}}, db) do
       {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
