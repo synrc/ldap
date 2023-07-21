@@ -63,12 +63,12 @@ defmodule LDAP.TCP do
            :done ->  code = :invalidCredentials
                      :logger.error 'BIND Error: ~p', [code]
                      response = LDAP."BindResponse"(resultCode: code,
-                         matchedDN: bindDN, diagnosticMessage: 'ERROR')
+                         matchedDN: "", diagnosticMessage: 'ERROR')
                      answer(response, no, :bindResponse, socket)
             {:row,[dn,password]} ->
                      :logger.info 'BIND DN: ~p', [bindDN]
                      response = LDAP."BindResponse"(resultCode: :success,
-                          matchedDN: bindDN, diagnosticMessage: 'OK')
+                          matchedDN: "", diagnosticMessage: 'OK')
                      answer(response, no, :bindResponse, socket)
        end
    end
@@ -77,7 +77,7 @@ defmodule LDAP.TCP do
        code = :authMethodNotSupported
        :logger.info 'BIND ERROR: ~p', [code]
        response = LDAP."BindResponse"(resultCode: code,
-          matchedDN: bindDN, diagnosticMessage: 'ERROR')
+          matchedDN: "", diagnosticMessage: 'ERROR')
        answer(response, no, :bindResponse, socket)
    end
 
@@ -121,11 +121,13 @@ defmodule LDAP.TCP do
         users =
             [node("cn=admin,dc=synrc,dc=com", [
                 attr("cn",["admin"]),
+                attr("dn",["dc=synrc,dc=com"]),
                 attr("uid",['1000']),
                 attr("objectClass",['inetOrgPerson','posixAccount'])]),
 
             node("cn=rocco,dc=synrc,dc=com", [
                 attr("cn",["rocco"]),
+                attr("dn",["dc=synrc,dc=com"]),
                 attr("uid",['2000']),
                 attr("objectClass",['inetOrgPerson','posixAccount'])])]
 
@@ -138,7 +140,7 @@ defmodule LDAP.TCP do
 
            end)
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
@@ -152,7 +154,6 @@ defmodule LDAP.TCP do
        schema = [
             node("ou=schema", [
                 attr("ou",["schema"]),
-                attr("dn",["ou=schema"]),
                 attr("objectClass",['organizationalUnit','top'])])
             ]
 
@@ -166,7 +167,7 @@ defmodule LDAP.TCP do
             end
          )
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
@@ -203,7 +204,7 @@ defmodule LDAP.TCP do
 
        )
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
@@ -217,7 +218,7 @@ defmodule LDAP.TCP do
          [
          ])
 
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: bindDN, diagnosticMessage: 'OK')
+       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
    end
 
@@ -228,17 +229,6 @@ defmodule LDAP.TCP do
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
        answer(resp, no, :modDNResponse, socket)
    end
-
-
-   def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
-       :logger.info 'MOD RDN DN: ~p', [dn]
-       :logger.info 'MOD RDN newRDN: ~p', [rdn]
-       :logger.info 'MOD RDN oldRDN: ~p', [old]
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
-       answer(resp, no, :modDNResponse, socket)
-   end
-
-
 
    def message(no, socket, {:modifyRequest, {_,dn, attributes}}, db) do
       {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
