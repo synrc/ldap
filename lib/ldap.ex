@@ -16,26 +16,25 @@ defmodule LDAP.TCP do
    def collect(db,st,:done, acc),    do: acc
    def collect(db,st,{:row,x}, acc), do: collect(db,st,step(db,st),[:erlang.list_to_tuple(x)|acc])
 
-#09:12:30.882 [info] SEARCH Filter: {:and,
-# [
-#   or: [
-#     equalityMatch: {:AttributeValueAssertion, "objectClass", "top"},
-#     substrings: {:SubstringFilter, "cn", [final: "a"]},
-#     present: "objectClass"
-#   ],
-#   substrings: {:SubstringFilter, "objectClass", [any: "a"]}
-# ]}
+   def query(q), do:
+       "select * from ldap where rdn in (select rdn from ldap where " <> match(q) <> ")"
 
-   def query(name) do
-       {:ok, db} = open(name)
-       {:ok, st} = prepare(db, "select * from ldap where rdn in (select rdn from ldap where " <>
-                               " (att = 'objectClass' and val like '%a%') " <>
-                               " and " <>
-                               " ((att = 'objectClass') or " <>
-                                 "(att = 'cn' and val like '%a%') or" <>
-                                 "(att = 'objectClass' and val='top')))" )
-       res = step(db,st)
-       collect(db,st,res,[])
+   def join(list, op), do:
+       :string.join(:lists.map(fn x -> :erlang.binary_to_list("(" <> match(x) <> ")") end, list), op)
+       |> :erlang.iolist_to_binary
+
+   def match({:equalityMatch, {_, a, v}}),         do: "(att = '#{a}' and val    = '#{v}')"
+   def match({:substrings, {_, a, [final: v]}}),   do: "(att = '#{a}' and val like '#{v}%')"
+   def match({:substrings, {_, a, [initial: v]}}), do: "(att = '#{a}' and val like '%#{v}')"
+   def match({:substrings, {_, a, [any: v]}}),     do: "(att = '#{a}' and val like '%#{v}%')"
+   def match({:present, a}),                       do: "(att = '#{a}')"
+   def match({:and, list}),                        do: "(" <> join(list, 'and') <> ")"
+   def match({:or,  list}),                        do: "(" <> join(list, 'or')  <> ")"
+   def match({:not, x}),                           do: "(not(" <> match(x) <> "))"
+
+   def select(db, filter) do
+       {:ok, st} = prepare(db, query(filter))
+       collect(db,st,step(db,st),[])
    end
 
    def list(name) do
@@ -131,10 +130,12 @@ defmodule LDAP.TCP do
        bindDN = "dc=synrc,dc=com"
        :logger.info 'SEARCH DN: ~p', [bindDN]
        :logger.info 'SEARCH Scope: ~p', [scope]
-       :logger.info 'SEARCH Filter: ~p', [filter]
+       :logger.info 'SEARCH Filter Raw: ~p', [filter]
+       :logger.info 'SEARCH Filter Parsed: ~p', [query(filter)]
+       :logger.info 'SEARCH Filter Executed: ~p', [select(db, filter)]
        :logger.info 'SEARCH Attr: ~p', [attributes]
 
-       synrc = 
+       synrc =
             [node("dc=synrc,dc=com", [
                 attr("dc",["synrc"]),
                 attr("objectClass",['domain','top'])])
