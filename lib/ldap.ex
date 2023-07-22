@@ -16,6 +16,28 @@ defmodule LDAP.TCP do
    def collect(db,st,:done, acc),    do: acc
    def collect(db,st,{:row,x}, acc), do: collect(db,st,step(db,st),[:erlang.list_to_tuple(x)|acc])
 
+#09:12:30.882 [info] SEARCH Filter: {:and,
+# [
+#   or: [
+#     equalityMatch: {:AttributeValueAssertion, "objectClass", "top"},
+#     substrings: {:SubstringFilter, "cn", [final: "a"]},
+#     present: "objectClass"
+#   ],
+#   substrings: {:SubstringFilter, "objectClass", [any: "a"]}
+# ]}
+
+   def query(name) do
+       {:ok, db} = open(name)
+       {:ok, st} = prepare(db, "select * from ldap where rdn in (select rdn from ldap where " <>
+                               " (att = 'objectClass' and val like '%a%') " <>
+                               " and " <>
+                               " ((att = 'objectClass') or " <>
+                                 "(att = 'cn' and val like '%a%') or" <>
+                                 "(att = 'objectClass' and val='top')))" )
+       res = step(db,st)
+       collect(db,st,res,[])
+   end
+
    def list(name) do
        {:ok, db} = open(name)
        {:ok, st} = prepare(db, "select * from ldap")
@@ -132,7 +154,7 @@ defmodule LDAP.TCP do
                 attr("objectClass",['inetOrgPerson','posixAccount'])])]
 
        :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-         
+
            case scope do
              :baseObject -> synrc
              :singleLevel -> users
@@ -159,7 +181,7 @@ defmodule LDAP.TCP do
 
 
        :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-         
+
            case scope do
              :wholeSubtree -> schema
              :baseObject -> schema
@@ -199,24 +221,10 @@ defmodule LDAP.TCP do
                    "cn=admin,dc=synrc,dc=com" -> admin
                 end
             _ -> []
-            
+
          end
 
        )
-
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
-       answer(resp, no, :searchResDone,socket)
-   end
-
-   def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
-       :logger.info 'SEARCH DN: ~p', [bindDN]
-       :logger.info 'SEARCH Scope: ~p', [scope]
-       :logger.info 'SEARCH Filter: ~p', [filter]
-       :logger.info 'SEARCH Attr: ~p', [attributes]
-
-       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-         [
-         ])
 
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
        answer(resp, no, :searchResDone,socket)
