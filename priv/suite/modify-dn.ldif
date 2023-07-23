@@ -1,4 +1,4 @@
-dn: cn=alice,ou=People,dc=synrc,dc=com
+dn: ou=schema
 changetype: moddn
-newRDN: uid=alice
+newRDN: cn=schema
 deleteOldRDN: 1

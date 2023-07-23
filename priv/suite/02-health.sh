@@ -7,4 +7,4 @@ ldapsearch -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret -b "
 ldapsearch -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com"
 ldapsearch -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" "uid=*" "objectClass"
 ldapsearch -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret -b "ou=People,dc=synrc,dc=com" '(sn=*To*)' cn sn
-ldapcompare -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret uid=admin,dc=synrc,dc=com uid:admin
+ldapcompare -H ldap://localhost:1489 -D "cn=admin,dc=synrc,dc=com" -w secret cn=admin,dc=synrc,dc=com cn:admin

@@ -29,6 +29,8 @@ defmodule LDAP do
     def collect0(db,st,:done, acc),    do: acc
     def collect0(db,st,{:row,x}, acc), do: collect0(db,st,step(db,st),[:erlang.list_to_tuple(x)|acc])
 
+    # Collect results from Search Query
+
     def collect(socket,no,db,st,:done, dn, att, values, attributes, nodes) do
         answer(node(qdn0(dn),[attr(att,values)|attributes]),no,:searchResEntry,socket)
         [node(dn,[attr(att,values)|attributes])|nodes]
@@ -49,6 +51,8 @@ defmodule LDAP do
         end
     end
 
+    # SQL query
+
     def query(:baseObject,q,dn), do:
         "select * from ldap where rdn = '#{dn}'"
 
@@ -62,6 +66,7 @@ defmodule LDAP do
         :string.join(:lists.map(fn x -> :erlang.binary_to_list("(" <> match(x) <> ")") end, list), op)
         |> :erlang.iolist_to_binary
 
+
     def match({:equalityMatch, {_, a, v}}),         do: "(att = '#{a}' and val    = '#{v}')"
     def match({:substrings, {_, a, [final: v]}}),   do: "(att = '#{a}' and val like '#{v}%')"
     def match({:substrings, {_, a, [initial: v]}}), do: "(att = '#{a}' and val like '%#{v}')"
@@ -71,13 +76,17 @@ defmodule LDAP do
     def match({:or,  list}),                        do: "(" <> join(list, 'or')  <> ")"
     def match({:not, x}),                           do: "(not(" <> match(x) <> "))"
 
-    def select(socket, no, db, filter, scope, dn) do
+    # Search
+
+    def search(socket, no, db, filter, scope, dn) do
         {:ok, st} = prepare(db, query(scope, filter, dn))
         case step(db,st) do
              :done -> []
              {:row, [dn,att,val]} -> collect(socket,no,db,st,{:row,[dn,att,val]},dn,att,[],[],[])
         end
     end
+
+    # Dump database
 
     def list(name) do
         {:ok, db} = open(name)
@@ -86,10 +95,14 @@ defmodule LDAP do
         collect0(db,st,res,[])
     end
 
+    # Start
+
     def start() do
         instance = code()
         :erlang.spawn(fn -> listen(:application.get_env(:ldap,:port,1489),instance) end)
     end
+
+    # Create table and tune SQL settings
 
     def initDB(path) do
         {:ok, conn} = open(path)
@@ -101,6 +114,8 @@ defmodule LDAP do
         :ok = execute(conn, "PRAGMA synchronous = 0;")
         conn
     end
+
+    # TCP listen
 
     def listen(port,path) do
         conn = initDB(path)
@@ -114,11 +129,33 @@ defmodule LDAP do
         accept(socket,conn)
     end
 
+    # TCP accept
+
     def accept(socket,conn) do
         {:ok, fd} = :gen_tcp.accept(socket)
         :erlang.spawn(fn -> loop(fd, conn) end)
         accept(socket,conn)
     end
+
+    # TCP looper
+
+    def loop(socket, db) do
+        case :gen_tcp.recv(socket, 0) do
+             {:ok, data} ->
+                  case :'LDAP'.decode(:'LDAPMessage',data) do
+                       {:ok,decoded} ->
+                           {:'LDAPMessage', no, payload, _} = decoded
+                           message(no, socket, payload, db)
+                           loop(socket, db)
+                       {:error,reason} ->
+                          :logger.error 'ERROR: ~p', [reason]
+                         :exit
+                  end
+             {:error, :closed} -> :exit
+        end
+    end
+
+    # LDAP protocol messagae handler
 
     def message(no, socket, {:bindRequest, {_,_,bindDN,{:simple, password}}}, db) do
         {:ok, statement} = prepare(db,
@@ -175,15 +212,16 @@ defmodule LDAP do
         :logger.info 'SEARCH Scope: ~p', [scope]
         :logger.info 'SEARCH Filter: ~p', [query(scope, filter, qdn(bindDN))]
         :logger.info 'SEARCH Attr: ~p', [attributes]
-        select(socket, no, db, filter, scope, qdn(bindDN))
+        search(socket, no, db, filter, scope, qdn(bindDN))
         resp = DS.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
         answer(resp, no, :searchResDone, socket)
     end
 
-    def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
+    def message(no, socket, {:modDNRequest, {_,dn,new,del,_}}, db) do
         :logger.info 'MOD RDN DN: ~p', [dn]
-        :logger.info 'MOD RDN newRDN: ~p', [rdn]
-        :logger.info 'MOD RDN oldRDN: ~p', [old]
+        :logger.info 'MOD RDN newRDN: ~p', [new]
+        :logger.info 'MOD RDN deleteOldRDN: ~p', [del]
+        modifyRDN(socket, no, db, dn, new, del)
         resp = DS.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: 'OK')
         answer(resp, no, :modDNResponse, socket)
     end
@@ -207,7 +245,8 @@ defmodule LDAP do
     def message(no, socket, {:compareRequest, {_,dn, assertion}}, db) do
         :logger.info 'CMP DN: ~p', [dn]
         :logger.info 'CMP Assertion: ~p', [assertion]
-        result = compareDN(db, db, assertion)
+        result = compareDN(db, dn, assertion)
+        :logger.info 'CMP Result: ~p', [result]
         response = DS.'LDAPResult'(resultCode: result, matchedDN: dn, diagnosticMessage: 'OK')
         answer(response, no, :compareResponse, socket)
     end
@@ -252,6 +291,8 @@ defmodule LDAP do
         :gen_tcp.close(socket)
     end
 
+    # LDAP protocol message answer
+
     def answer(response, no, op, socket) do
         message = DS."LDAPMessage"(messageID: no, protocolOp: {op, response})
         {:ok, bytes} = :'LDAP'.encode(:'LDAPMessage', message)
@@ -261,6 +302,13 @@ defmodule LDAP do
     def appendNotEmpty([]),  do: []
     def appendNotEmpty(res) do
         res ++ case res do [] -> [] ; _ -> ',' end
+    end
+
+    def modifyRDN(socket, no, db, dn, new, del) do
+        {:ok, st} = prepare(db, "update ldap set rdn = ?1 where rdn = ?2")
+        :logger.info 'MODIFY RDN UPDATE: ~p', [hash(qdn(dn))]
+        bind(db, st, [new,hash(qdn(dn))])
+        step(db,st)
     end
 
     def modifyDN(db, dn, attributes), do:
@@ -298,7 +346,13 @@ defmodule LDAP do
     end
 
     def compareDN(db, dn, assertion) do
-        :compareFalse
+        {:AttributeValueAssertion, a, v} = assertion
+        {:ok, st} = prepare(db, "select * from ldap where (rdn = '#{hash(qdn(dn))}') " <>
+                                "and (att = '#{a}') and (val = '#{v}')")
+        case step(db,st) do
+             :done -> :compareFalse
+             {:row,[dn,a,v]} -> :compareTrue
+        end
     end
 
     def createDN(db, dn, attributes) do
@@ -311,19 +365,4 @@ defmodule LDAP do
         :done = step(db, statement)
     end
 
-    def loop(socket, db) do
-        case :gen_tcp.recv(socket, 0) do
-             {:ok, data} ->
-                  case :'LDAP'.decode(:'LDAPMessage',data) do
-                       {:ok,decoded} ->
-                           {:'LDAPMessage', no, payload, _} = decoded
-                           message(no, socket, payload, db)
-                           loop(socket, db)
-                       {:error,reason} ->
-                          :logger.error 'ERROR: ~p', [reason]
-                         :exit
-                  end
-             {:error, :closed} -> :exit
-        end
-    end
 end
