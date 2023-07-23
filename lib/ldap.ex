@@ -62,13 +62,6 @@ defmodule LDAP.TCP do
    def match({:or,  list}),                        do: "(" <> join(list, 'or')  <> ")"
    def match({:not, x}),                           do: "(not(" <> match(x) <> "))"
 
-   def sel(name, filter) do
-       {:ok, db} = open(name)
-       scope = :singleLevel
-       dn = "dc=synrc,dc=com"
-       select([], [], db, filter, scope, dn)
-   end
-
    def select(socket, no, db, filter, scope, dn) do
        {:ok, st} = prepare(db, query(scope, filter, dn))
        case step(db,st) do
@@ -86,7 +79,7 @@ defmodule LDAP.TCP do
 
    def start() do
        instance = code()
-       :erlang.spawn(fn -> listen(1489,instance) end)
+       :erlang.spawn(fn -> listen(:application.get_env(:ldap,:port,1489),instance) end)
    end
 
    def initDB(path) do
@@ -106,7 +99,7 @@ defmodule LDAP.TCP do
        createDN(conn, "ou=schema", [attr("ou",["schema"]),attr("objectClass",["top","domain"])])
        createDN(conn, "cn=tonpa,dc=synrc,dc=com", [attr("cn",["tonpa"]),attr("uid",["1000"]),attr("objectClass",["inetOrgPerson","posixAccount"])])
        createDN(conn, "cn=rocco,dc=synrc,dc=com", [attr("cn",["rocco"]),attr("uid",["1001"]),attr("objectClass",["inetOrgPerson","posixAccount"])])
-       createDN(conn, "cn=admin,dc=synrc,dc=com", [attr("rootpw",["secret"]),attr("cn",["admin"])])
+       createDN(conn, "cn=admin,dc=synrc,dc=com", [attr("rootpw",["secret"]),attr("cn",["admin"]),attr("objectClass",["inetOrgPerson"])])
        {:ok, socket} = :gen_tcp.listen(port,
          [:binary, {:packet, 0}, {:active, false}, {:reuseaddr, true}])
        accept(socket,conn)
@@ -253,7 +246,6 @@ defmodule LDAP.TCP do
        message = LDAP."LDAPMessage"(messageID: no, protocolOp: {op, response})
        {:ok, bytes} = :'LDAP'.encode(:'LDAPMessage', message)
        send = :gen_tcp.send(socket, :erlang.iolist_to_binary(bytes))
-       :io.format 'SEND: ~p ~p ~p ~p~n', [send, no, op, response]
    end
 
    def appendNotEmpty([]),  do: []
