@@ -2,6 +2,8 @@ defmodule LDAP.TCP do
    import Exqlite.Sqlite3
    require LDAP
 
+   # Prelude
+
    def hash(x),        do: x
    def attr(k,v),      do: {:PartialAttribute, k, v}
    def node(dn,attrs), do: {:SearchResultEntry, dn, attrs}
@@ -11,13 +13,41 @@ defmodule LDAP.TCP do
    def rev(list),      do: :lists.reverse(list)
    def code(),         do: :binary.encode_hex(:crypto.strong_rand_bytes(8))
    def replace(s,a,b), do: :re.replace(s,a,b,[:global,{:return,:list}])
-   def qdn(rdn),       do: binary('/'++:string.join(rev(tok(replace(string(rdn)," ",[]),',')),'/'))
+   def qdn(rdn),       do: binary(:string.join(rev(tok(replace(string(rdn)," ",[]),',')),'/'))
+   def qdn0(rdn),      do: binary(:string.join(rev(tok(string(rdn),'/')),','))
+   def bin(x) when is_integer(x), do: :erlang.integer_to_binary(x)
+   def bin(x) when is_list(x), do: :erlang.iolist_to_binary(x)
+   def bin(x), do: x
+   def collect0(db,st,:done, acc),    do: acc
+   def collect0(db,st,{:row,x}, acc), do: collect0(db,st,step(db,st),[:erlang.list_to_tuple(x)|acc])
 
-   def collect(db,st,:done, acc),    do: acc
-   def collect(db,st,{:row,x}, acc), do: collect(db,st,step(db,st),[:erlang.list_to_tuple(x)|acc])
+   def collect(socket,no,db,st,:done, dn, att, values, attributes, nodes) do
+       answer(node(qdn0(dn),[attr(att,values)|attributes]),no,:searchResEntry,socket)
+       [node(dn,[attr(att,values)|attributes])|nodes]
+   end
+   def collect(socket,no,db,st,{:row,[xrdn,xatt,yval]}, dn, att, values, attributes, nodes) do
+       xval = bin(yval)
+       next = step(db,st)
+       case xrdn == dn do
+          false ->
+             answer(node(qdn0(dn),[attr(att,values)|attributes]),no,:searchResEntry,socket)
+             collect(socket,no,db,st,next,xrdn,xatt,[xval],[],[node(dn,[attr(att,values)|attributes])|nodes])
+          true ->
+             case xatt == att do
+                true -> collect(socket,no,db,st,next,dn,xatt,[xval|values],attributes,nodes)
+                false -> collect(socket,no,db,st,next,dn,xatt,[xval],[attr(att,values)|attributes],nodes)
+             end
+       end
+   end
 
-   def query(q), do:
-       "select * from ldap where rdn in (select rdn from ldap where " <> match(q) <> ")"
+   def query(:baseObject,q,dn), do:
+       "select * from ldap where rdn = '#{dn}'"
+
+   def query(:singleLevel,q,dn), do:
+       "select * from ldap where rdn in (select rdn from ldap where (rdn like '#{dn}/%') and " <> match(q) <> ")"
+
+   def query(:wholeSubtree,q,dn), do:
+       "select * from ldap where rdn in (select rdn from ldap where (rdn like '#{dn}%') and " <> match(q) <> ")"
 
    def join(list, op), do:
        :string.join(:lists.map(fn x -> :erlang.binary_to_list("(" <> match(x) <> ")") end, list), op)
@@ -32,16 +62,26 @@ defmodule LDAP.TCP do
    def match({:or,  list}),                        do: "(" <> join(list, 'or')  <> ")"
    def match({:not, x}),                           do: "(not(" <> match(x) <> "))"
 
-   def select(db, filter) do
-       {:ok, st} = prepare(db, query(filter))
-       collect(db,st,step(db,st),[])
+   def sel(name, filter) do
+       {:ok, db} = open(name)
+       scope = :singleLevel
+       dn = "dc=synrc,dc=com"
+       select([], [], db, filter, scope, dn)
+   end
+
+   def select(socket, no, db, filter, scope, dn) do
+       {:ok, st} = prepare(db, query(scope, filter, dn))
+       case step(db,st) do
+            :done -> []
+            {:row, [dn,att,val]} -> collect(socket,no,db,st,{:row,[dn,att,val]},dn,att,[],[],[])
+       end
    end
 
    def list(name) do
        {:ok, db} = open(name)
        {:ok, st} = prepare(db, "select * from ldap")
        res = step(db,st)
-       collect(db,st,res,[])
+       collect0(db,st,res,[])
    end
 
    def start() do
@@ -62,9 +102,11 @@ defmodule LDAP.TCP do
 
    def listen(port,path) do
        conn = initDB(path)
-       createDN(conn, "cn=admin,dc=synrc,dc=com", [attr("rootpw",["secret"]),attr("cn",["admin"])])
        createDN(conn, "dc=synrc,dc=com", [attr("dc",["synrc"]),attr("objectClass",["top","domain"])])
        createDN(conn, "ou=schema", [attr("ou",["schema"]),attr("objectClass",["top","domain"])])
+       createDN(conn, "cn=tonpa,dc=synrc,dc=com", [attr("cn",["tonpa"]),attr("uid",["1000"]),attr("objectClass",["inetOrgPerson","posixAccount"])])
+       createDN(conn, "cn=rocco,dc=synrc,dc=com", [attr("cn",["rocco"]),attr("uid",["1001"]),attr("objectClass",["inetOrgPerson","posixAccount"])])
+       createDN(conn, "cn=admin,dc=synrc,dc=com", [attr("rootpw",["secret"]),attr("cn",["admin"])])
        {:ok, socket} = :gen_tcp.listen(port,
          [:binary, {:packet, 0}, {:active, false}, {:reuseaddr, true}])
        accept(socket,conn)
@@ -126,109 +168,14 @@ defmodule LDAP.TCP do
        answer(resp, no, :searchResDone,socket)
    end
 
-   def message(no, socket, {:searchRequest, {_,"dc=synrc,dc=com",scope,_,limit,_,_,filter,attributes}}, db) do
-       bindDN = "dc=synrc,dc=com"
-       :logger.info 'SEARCH DN: ~p', [bindDN]
-       :logger.info 'SEARCH Scope: ~p', [scope]
-       :logger.info 'SEARCH Filter Raw: ~p', [filter]
-       :logger.info 'SEARCH Filter Parsed: ~p', [query(filter)]
-       :logger.info 'SEARCH Filter Executed: ~p', [select(db, filter)]
-       :logger.info 'SEARCH Attr: ~p', [attributes]
-
-       synrc =
-            [node("dc=synrc,dc=com", [
-                attr("dc",["synrc"]),
-                attr("objectClass",['domain','top'])])
-            ]
-
-        users =
-            [node("cn=admin,dc=synrc,dc=com", [
-                attr("cn",["admin"]),
-                attr("dn",["dc=synrc,dc=com"]),
-                attr("uid",['1000']),
-                attr("objectClass",['inetOrgPerson','posixAccount'])]),
-
-            node("cn=rocco,dc=synrc,dc=com", [
-                attr("cn",["rocco"]),
-                attr("dn",["dc=synrc,dc=com"]),
-                attr("uid",['2000']),
-                attr("objectClass",['inetOrgPerson','posixAccount'])])]
-
-       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-
-           case scope do
-             :baseObject -> synrc
-             :singleLevel -> users
-             :wholeSubtree -> synrc ++ users
-
-           end)
-
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
-       answer(resp, no, :searchResDone,socket)
-   end
-
-   def message(no, socket, {:searchRequest, {_,"ou=schema",scope,_,limit,_,_,filter,attributes}}, db) do
-       bindDN = "ou=schema"
-       :logger.info 'SEARCH DN: ~p', [bindDN]
-       :logger.info 'SEARCH Scope: ~p', [scope]
-       :logger.info 'SEARCH Filter: ~p', [filter]
-       :logger.info 'SEARCH Attr: ~p', [attributes]
-
-       schema = [
-            node("ou=schema", [
-                attr("ou",["schema"]),
-                attr("objectClass",['organizationalUnit','top'])])
-            ]
-
-
-       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end,
-
-           case scope do
-             :wholeSubtree -> schema
-             :baseObject -> schema
-             :singleLevel -> []
-            end
-         )
-
-       resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
-       answer(resp, no, :searchResDone,socket)
-   end
-
    def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
-
-       :logger.info 'SEARCH DN: ~p', [bindDN]
+       :logger.info 'SEARCH DN: ~p', [qdn(bindDN)]
        :logger.info 'SEARCH Scope: ~p', [scope]
-       :logger.info 'SEARCH Filter: ~p', [filter]
+       :logger.info 'SEARCH Filter: ~p', [query(scope, filter, qdn(bindDN))]
        :logger.info 'SEARCH Attr: ~p', [attributes]
-
-       admin =
-            [node("cn=admin,dc=synrc,dc=com", [
-                attr("cn",["admin"]),
-                attr("uid",['1000']),
-                attr("objectClass",['inetOrgPerson','posixAccount'])])]
-
-       rocco =
-            [node("cn=rocco,dc=synrc,dc=com", [
-                attr("cn",["rocco"]),
-                attr("uid",['2000']),
-                attr("objectClass",['inetOrgPerson','posixAccount'])])]
-
-       :lists.map(fn response -> answer(response,no,:searchResEntry,socket) end, 
-
-         case scope do
-            :baseObject ->
-                case bindDN do
-                   "cn=rocco,dc=synrc,dc=com" -> rocco
-                   "cn=admin,dc=synrc,dc=com" -> admin
-                end
-            _ -> []
-
-         end
-
-       )
-
+       select(socket, no, db, filter, scope, qdn(bindDN))
        resp = LDAP.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
-       answer(resp, no, :searchResDone,socket)
+       answer(resp, no, :searchResDone, socket)
    end
 
    def message(no, socket, {:modDNRequest, {_,dn,rdn,old,_}}, db) do
@@ -305,7 +252,8 @@ defmodule LDAP.TCP do
    def answer(response, no, op, socket) do
        message = LDAP."LDAPMessage"(messageID: no, protocolOp: {op, response})
        {:ok, bytes} = :'LDAP'.encode(:'LDAPMessage', message)
-       :gen_tcp.send(socket, :erlang.iolist_to_binary(bytes))
+       send = :gen_tcp.send(socket, :erlang.iolist_to_binary(bytes))
+       :io.format 'SEND: ~p ~p ~p ~p~n', [send, no, op, response]
    end
 
    def appendNotEmpty([]),  do: []
@@ -337,14 +285,14 @@ defmodule LDAP.TCP do
        :logger.info 'MOD DEL RDN: ~p', [hash(qdn(dn))]
        bind(db, st, [hash(qdn(dn)),att])
        res = step(db,st)
-       collect(db,st,res,[])
+       collect0(db,st,res,[])
    end
 
    def deleteDN(db, dn) do
        {:ok, st} = prepare(db, "delete from ldap where rdn = ?1")
        bind(db, st, [hash(qdn(dn))])
        res = step(db,st)
-       collect(db,st,res,[])
+       collect0(db,st,res,[])
    end
 
    def compareDN(db, dn, assertions) do
@@ -352,7 +300,7 @@ defmodule LDAP.TCP do
 
    def createDN(db, dn, attributes) do
        norm  = :lists.foldr(fn {:PartialAttribute, att, vals}, acc ->
-               :lists.map(fn val -> [hash(qdn(dn)),att,val] end, vals) ++ acc end, [], attributes)
+               :lists.map(fn val -> [qdn(dn),att,val] end, vals) ++ acc end, [], attributes)
        {_,p} = :lists.foldr(fn x, {acc,res}  -> {acc + length(x), appendNotEmpty(res) ++
                :io_lib.format('(?~p,?~p,?~p)',[acc+1,acc+2,acc+3])} end, {0,[]}, norm)
        {:ok, statement} = prepare(db, 'insert into ldap (rdn,att,val) values ' ++ p ++ '')
