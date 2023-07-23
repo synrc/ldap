@@ -1,4 +1,4 @@
-defmodule LDAP.Test do
+defmodule LDAP.Client do
   require Record
 
   def testConnection() do
