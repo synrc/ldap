@@ -1,9 +1,0 @@
-{application, ldap, [
-    {description,  "LDAP  CXC 138 22 Directory Server"},
-    {vsn,          "8.6.3"},
-    {applications, [kernel, stdlib]},
-    {modules,      [tcp_listener, eds_ops, eds_fsm, eds_filter, eds_object, eds_msg, 'LDAP', rbtree]},
-    {registered,   [tcp_server_sup, client_sup, ops_sup, tcp_listener]},
-    {mod, { eds_app, []}},
-    {env, []}
-]}.

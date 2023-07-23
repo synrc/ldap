@@ -246,7 +246,6 @@ defmodule LDAP do
         :logger.info 'CMP DN: ~p', [dn]
         :logger.info 'CMP Assertion: ~p', [assertion]
         result = compareDN(db, dn, assertion)
-        :logger.info 'CMP Result: ~p', [result]
         response = DS.'LDAPResult'(resultCode: result, matchedDN: dn, diagnosticMessage: 'OK')
         answer(response, no, :compareResponse, socket)
     end
