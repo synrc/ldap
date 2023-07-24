@@ -27,7 +27,7 @@ iex(2)> :application.which_applications
   {:ldap, 'LDAP  CXC 138 22 Directory Server', '13.7.24'},
   {:exqlite, 'SQLITE Elixir SQLite3 library', '0.13.14'},
   {:db_connection, 'Database connection behaviour', '2.5.0'},
-  {:eldap, 'LDAP  CXC 138 23 Client', '1.2.9'},
+  {:eldap, 'LDAP  CXC 138 22 Client', '1.2.9'},
   {:inets, 'INETS  CXC 138 49', '7.5'},
   {:ssl, 'Erlang/OTP SSL application', '10.6.1'},
   {:public_key, 'Public key infrastructure', '1.11.3'},
