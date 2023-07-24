@@ -8,7 +8,7 @@ compatible LDAP directory server with SQLITE, LMDB, MONGODB backends.
 ![ldap-shaders](https://github.com/synrc/ldap/assets/144776/19f35667-9a0e-4e43-8524-b6ccdf6c21b7)
 
 Run
-------
+---
 
 ```
 $ mix deps.get
@@ -30,21 +30,12 @@ Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
 ]
 ```
 
-Suite
------
+Mentions
+--------
 
-```
-> LDAP.testConnection
-[
-  {:dn, 'cn=Maxim Sokhatsky,ou=People,dc=synrc,dc=com',
-   [{'mail', ['maxim@synrc.com']}, {'cn', ['Maxim Sokhatsky']}]},
-  {:dn, 'cn=Namdak Tonpa,ou=People,dc=synrc,dc=com',
-   [{'mail', ['namdak@tonpa.guru']}, {'cn', ['Namdak Tonpa']}]},
-  {:dn, 'uid=admin,dc=synrc,dc=com', []},
-  {:dn, 'ou=People,dc=synrc,dc=com', []},
-  {:dn, 'dc=synrc,dc=com', []}
-]
-```
+* <a href="https://tonpa.guru/stream/2010/2010-10-18 LDAP.htm">2010-10-18 LDAP</a><br>
+* <a href="https://tonpa.guru/stream/2023/2023-07-20 LDAP Compliance.htm">tonpa.guru/stream/2023/2023-07-20 LDAP Compliance</a><br>
+* <a href="https://ldap.erp.uno">2023-07-25 SYNRC LDAP 2.0</a><br>
 
 Credits
 -------
