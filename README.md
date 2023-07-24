@@ -47,7 +47,7 @@ Mentions
 
 * <a href="https://tonpa.guru/stream/2010/2010-10-18 LDAP.htm">2010-10-18 LDAP</a><br>
 * <a href="https://tonpa.guru/stream/2023/2023-07-20 LDAP Compliance.htm">2023-07-20 LDAP Compliance</a><br>
-* <a href="https://ldap.erp.uno">2023-07-25 SYNRC LDAP 2.0</a><br>
+* <a href="https://ldap.erp.uno">2023-07-25 SYNRC LDAP 13.7.24</a><br>
 
 Credits
 -------
