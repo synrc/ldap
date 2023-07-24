@@ -199,7 +199,7 @@ defmodule LDAP do
               attr("altServer", ['ldap.synrc.com']),
               attr("subschemaSubentry", ['ou=schema']),
               attr("vendorName", ['SYNRC LDAP']),
-              attr("vendorVersion", ['1.0']),
+              attr("vendorVersion", ['13.7.24']),
               attr("supportedSASLMechanisms", ['SIMPLE']),
               attr("objectClass", ['top','extensibleObject']),
               attr("entryUUID", [code()])])])
