@@ -19,8 +19,16 @@ Erlang/OTP 24 [erts-12.2.1] [source] [64-bit]
 Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
 > :application.which_applications
 [
-  {:ldap, 'LDAP Directory and Identity Server', '8.6.0'},
-  {:eldap, 'Ldap api', '1.2.9'},
+  {:logger, 'logger', '1.12.2'},
+  {:ldap, 'LDAP  CXC 138 22 Directory Server', '13.7.24'},
+  {:exqlite, 'SQLITE Elixir SQLite3 library', '0.13.14'},
+  {:db_connection, 'Database connection behaviour', '2.5.0'},
+  {:eldap, 'LDAP  CXC 138 23 Client', '1.2.9'},
+  {:inets, 'INETS  CXC 138 49', '7.5'},
+  {:ssl, 'Erlang/OTP SSL application', '10.6.1'},
+  {:public_key, 'Public key infrastructure', '1.11.3'},
+  {:asn1, 'The Erlang ASN1 compiler version 5.0.17', '5.0.17'},
+  {:crypto, 'CRYPTO', '5.0.5'},
   {:mix, 'mix', '1.12.2'},
   {:iex, 'iex', '1.12.2'},
   {:elixir, 'elixir', '1.12.2'},
