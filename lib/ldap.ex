@@ -8,7 +8,7 @@ defmodule LDAP do
     def start(_type, _args) do
         :logger.add_handlers(:ldap)
         LDAP.start
-        :supervisor.start_link({:local, __MODULE__}, __MODULE__, [])
+        :supervisor.start_link({:local, LDAP}, LDAP, [])
     end
 
     # Prelude
@@ -98,10 +98,10 @@ defmodule LDAP do
 
     # Start
 
-    def start() do
-        instance = code()
-        :erlang.spawn(fn -> listen(:application.get_env(:ldap,:port,1489),instance) end)
-    end
+    def start(), do:
+        :erlang.spawn(fn ->
+            listen(:application.get_env(:ldap,:port,1489),
+                   :application.get_env(:ldap,:instance,code())) end)
 
     # Create table and tune SQL settings
 

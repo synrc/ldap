@@ -5,7 +5,7 @@
 -compile(nowarn_unused_vars).
 -dialyzer(no_improper_lists).
 -dialyzer(no_match).
--include("LDAP.hrl").
+-include_lib("ldap/include/LDAP.hrl").
 -asn1_info([{vsn,'5.0.21'},
             {module,'LDAP'},
             {options,[warnings,ber,errors,
