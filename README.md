@@ -17,7 +17,11 @@ Erlang/OTP 24 [erts-12.2.1] [source] [64-bit]
               [smp:12:12] [ds:12:12:10] [async-threads:1] [jit]
 
 Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
-> :application.which_applications
+iex(1)>
+07:13:52.765 [info]  SYNRC LDAP Instance: "C27876AC5906C140" 
+07:13:52.765 [info]  SYNRC LDAP Connection: #Reference<0.3013795599.2027814937.92659>
+nil
+iex(2)> :application.which_applications
 [
   {:logger, 'logger', '1.12.2'},
   {:ldap, 'LDAP  CXC 138 22 Directory Server', '13.7.24'},

@@ -107,7 +107,8 @@ defmodule LDAP do
 
     def initDB(path) do
         {:ok, conn} = open(path)
-        :logger.info 'SYNRC LDAP Instance: ~p Connection: ~p', [path,conn]
+        :logger.info 'SYNRC LDAP Instance: ~p', [path]
+        :logger.info 'SYNRC LDAP Connection: ~p', [conn]
         execute(conn, "create table ldap (rdn text,att text,val binary)")
         :ok = execute(conn, "PRAGMA journal_mode = OFF;")
         :ok = execute(conn, "PRAGMA temp_store = MEMORY;")
