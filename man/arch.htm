@@ -80,6 +80,21 @@
 | /dc=com/dc=synrc/uid=admin/u:s | 1 | 2   | userPassword | secret               |
 +--------------------------------+---+-----+--------------+----------------------+</code></figure>
 
+<h3>SQLITE</h3>
+
+<p>Single table.</p>
+
+    <figure><code>+--------------------------------+--------------+----------------------+
+| Directory Plain Structure      | attributte   | value                |
++--------------------------------+--------------+----------------------+
+| /dc=com/dc=synrc               | dc           | synrc                |
+| /dc=com/dc=synrc               | objectClass  | top                  |
+| /dc=com/dc=synrc               | objectClass  | domain               |
+| /dc=com/dc=synrc/uid=admin     | uid          | admin                |
+| /dc=com/dc=synrc/uid=admin     | objectClass  | top                  |
+| /dc=com/dc=synrc/uid=admin     | objectClass  | account              |
+| /dc=com/dc=synrc/uid=admin     | userPassword | secret               |
++--------------------------------+--------------+----------------------+</code></figure>
 
        <br><center>&dot;</center>
 
