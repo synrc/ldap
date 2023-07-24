@@ -211,7 +211,7 @@ defmodule LDAP do
     def message(no, socket, {:searchRequest, {_,bindDN,scope,_,limit,_,_,filter,attributes}}, db) do
         :logger.info 'SEARCH DN: ~p', [qdn(bindDN)]
         :logger.info 'SEARCH Scope: ~p', [scope]
-        :logger.info 'SEARCH Filter: ~p', [query(scope, filter, qdn(bindDN))]
+        :logger.info 'SEARCH Filter: ~p', [filter]
         :logger.info 'SEARCH Attr: ~p', [attributes]
         search(socket, no, db, filter, scope, qdn(bindDN))
         resp = DS.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: 'OK')
