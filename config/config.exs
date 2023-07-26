@@ -1,8 +1,11 @@
 use Mix.Config
 
 config :ldap,
+  port: 1489,
+  instance: "D4252CF20538EC22",
+  module: LDAP,
   logger_level: :info,
-  logger: [{:handler, :default2, :logger_std_h,
+  logger: [{:handler, :default, :logger_std_h,
             %{level: :info,
               id: :synrc,
               max_size: 2000,

@@ -1,4 +1,5 @@
 defmodule LDAP.Client do
+  @moduledoc "The LDAPv3 client implementation module."
   require Record
 
   def testConnection() do
