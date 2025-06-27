@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :ldap,
   port: 1489,

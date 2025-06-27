@@ -4,10 +4,10 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "13.7.26",
+      version: "14.6.26",
       description: "LDAP  CXC 138 22 Directory Server",
       package: package(),
-      elixir: "~> 1.7",
+      elixir: "~> 1.15",
       deps: deps(),
       releases: [ldap: [include_executables_for: [:unix], cookie: "SYNRC:LDAP"]]
     ]

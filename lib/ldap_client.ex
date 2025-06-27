@@ -33,7 +33,7 @@ defmodule LDAP.Client do
            _ -> :ok end
       seq = :erlang.integer_to_list(no)
       name = 'user_' ++ seq
-      {time,res} = :timer.tc(fn -> :eldap.add(conn, 'cn='++name++', ou=People, dc=synrc, dc=com',
+      {_time,_res} = :timer.tc(fn -> :eldap.add(conn, 'cn='++name++', ou=People, dc=synrc, dc=com',
        [{ 'objectClass', ['person','inetorgperson']},
         { 'givenName', ['givenName ' ++ seq]},
         { 'cn', [name]},

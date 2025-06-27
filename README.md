@@ -18,7 +18,7 @@ Erlang/OTP 24 [erts-12.2.1] [source] [64-bit]
 
 Interactive Elixir (1.12.2) - press Ctrl+C to exit (type h() ENTER for help)
 iex(1)>
-07:13:52.765 [info]  SYNRC LDAP Instance: "C27876AC5906C140" 
+07:13:52.765 [info]  SYNRC LDAP Instance: "C27876AC5906C140"
 07:13:52.765 [info]  SYNRC LDAP Connection: #Reference<0.3013795599.2027814937.92659>
 nil
 iex(2)> :application.which_applications
