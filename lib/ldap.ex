@@ -110,6 +110,7 @@ defmodule LDAP do
 
     @doc "Start server base on `:port` and `:instance` application environment parameters."
     def start(), do:
+       :logger.info ~c"Instance: ~p", [code()]
         :erlang.spawn(fn ->
             listen(:application.get_env(:ldap,:port,1489),
                    :application.get_env(:ldap,:instance,code())) end)
