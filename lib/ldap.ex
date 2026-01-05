@@ -10,7 +10,7 @@ defmodule LDAP do
 
     def init([]), do: {:ok, { {:one_for_one, 5, 10}, []} }
     def start(_type, _args) do
-#       :logger.add_handlers(:ldap)
+       :logger.add_handlers(:ldap)
         LDAP.start
         :supervisor.start_link({:local, LDAP}, LDAP, [])
     end
