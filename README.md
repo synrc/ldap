@@ -49,10 +49,8 @@ Mentions
 * <a href="https://tonpa.guru/stream/2023/2023-07-20 LDAP Compliance.htm">2023-07-20 LDAP Compliance</a><br>
 * <a href="https://ldap.erp.uno">2023-07-25 SYNRC LDAP 13.7.24</a><br>
 
-Credits
--------
+Автор
+-----
 
-* Namdak Tonpa
-
-OM A HUM
+* Максим Сохацький
 
