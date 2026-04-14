@@ -1,0 +1,9 @@
+ebin
+mix.lock
+_build/
+.applist
+Mnesia*/
+deps
+rocksdb/
+*.log
+doc/
