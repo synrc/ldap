@@ -25,13 +25,6 @@ iex(1)>
 nil
 ```
 
-Articles
---------
-
-* [2010-10-18 LDAP](https://tonpa.guru/stream/2010/2010-10-18%20LDAP.htm)
-* [2023-07-20 LDAP Compliance](https://tonpa.guru/stream/2023/2023-07-20%20LDAP%20Compliance.htm)
-* [2023-07-25 SYNRC LDAP 13.7.24](https://erp.uno/ldap/)
-
 Authors
 -------
 
