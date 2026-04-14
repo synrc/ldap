@@ -4,7 +4,7 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "15.4.14",
+      version: "15.4.15",
       description: "LDAP  CXC 138 22 Directory Server",
       package: package(),
       deps: deps(),
