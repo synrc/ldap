@@ -4,7 +4,7 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "15.4.15",
+      version: "15.4.16",
       description: "LDAP  CXC 138 22 Directory Server",
       package: package(),
       deps: deps(),
@@ -31,7 +31,7 @@ defmodule LDAP.Mixfile do
 
   def deps() do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:exqlite, "~> 0.36.0"}
     ]
   end
