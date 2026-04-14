@@ -159,9 +159,9 @@ defmodule LDAP do
     defp loop(socket, db, mod) do
         case :gen_tcp.recv(socket, 0) do
              {:ok, data} ->
-                  case :'LDAP'.decode(:'LDAPMessage',data) do
+                  case :"LDAP".decode(:"LDAPMessage",data) do
                        {:ok,decoded} ->
-                           {:'LDAPMessage', no, payload, _} = decoded
+                           {:"LDAPMessage", no, payload, _} = decoded
                            mod.message(no, socket, payload, db)
                            loop(socket, db, mod)
                        {:error,reason} ->
@@ -179,7 +179,7 @@ defmodule LDAP do
     def message(no, socket, {:bindRequest, {_,_,bindDN,{:simple, password}}}, db) do
         {:ok, statement} = prepare(db,
             "select rdn, att from ldap where rdn = ?1 and att = 'rootpw' and val = ?2")
-        bind(db, statement, [hash(qdn(bindDN)),password])
+        bind(statement, [hash(qdn(bindDN)),password])
         case step(db, statement) do
             :done ->  code = :invalidCredentials
                       :logger.error ~c"BIND Error: ~p", [code]
@@ -222,7 +222,7 @@ defmodule LDAP do
               attr("objectClass", [~c"top",~c"extensibleObject"]),
               attr("entryUUID", [code()])])])
 
-        resp = LDAP.DS.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: ~c"OK")
+        resp = LDAP.DS."LDAPResult"(resultCode: :success, matchedDN: "", diagnosticMessage: ~c"OK")
         answer(resp, no, :searchResDone,socket)
     end
 
@@ -232,7 +232,7 @@ defmodule LDAP do
         :logger.info ~c"SEARCH Filter: ~p", [filter]
         :logger.info ~c"SEARCH Attr: ~p", [attributes]
         search(socket, no, db, filter, scope, qdn(bindDN))
-        resp = LDAP.DS.'LDAPResult'(resultCode: :success, matchedDN: "", diagnosticMessage: ~c"OK")
+        resp = LDAP.DS."LDAPResult"(resultCode: :success, matchedDN: "", diagnosticMessage: ~c"OK")
         answer(resp, no, :searchResDone, socket)
     end
 
@@ -241,21 +241,21 @@ defmodule LDAP do
         :logger.info ~c"MOD RDN newRDN: ~p", [new]
         :logger.info ~c"MOD RDN deleteOldRDN: ~p", [del]
         modifyRDN(socket, no, db, dn, new, del)
-        resp = LDAP.DS.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: ~c"OK")
+        resp = LDAP.DS."LDAPResult"(resultCode: :success, matchedDN: dn, diagnosticMessage: ~c"OK")
         answer(resp, no, :modDNResponse, socket)
     end
 
     def message(no, socket, {:modifyRequest, {_,dn, attributes}}, db) do
        {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
-       bind(db, statement, [hash(qdn(dn))])
+       bind(statement, [hash(qdn(dn))])
        case step(db, statement) do
             {:row, _} -> :logger.info ~c"MOD DN: ~p", [dn]
                          modifyDN(db, dn, attributes)
-                         resp = LDAP.DS.'LDAPResult'(resultCode: :success,
+                         resp = LDAP.DS."LDAPResult"(resultCode: :success,
                              matchedDN: dn, diagnosticMessage: ~c"OK")
                          answer(resp, no, :modifyResponse, socket)
             :done ->     :logger.info ~c"MOD ERROR: ~p", [dn]
-                         resp = LDAP.DS.'LDAPResult'(resultCode: :noSuchObject,
+                         resp = LDAP.DS."LDAPResult"(resultCode: :noSuchObject,
                             matchedDN: dn, diagnosticMessage: ~c"ERROR")
                          answer(resp, no, :modifyResponse, socket)
        end
@@ -265,23 +265,23 @@ defmodule LDAP do
         :logger.info ~c"CMP DN: ~p", [dn]
         :logger.info ~c"CMP Assertion: ~p", [assertion]
         result = compareDN(db, dn, assertion)
-        response = LDAP.DS.'LDAPResult'(resultCode: result, matchedDN: dn, diagnosticMessage: ~c"OK")
+        response = LDAP.DS."LDAPResult"(resultCode: result, matchedDN: dn, diagnosticMessage: ~c"OK")
         answer(response, no, :compareResponse, socket)
     end
 
     def message(no, socket, {:addRequest, {_,dn, attributes}}, db) do
         {:ok, statement} = prepare(db, "select rdn, att, val from ldap where rdn = ?1")
-        bind(db, statement, [hash(qdn(dn))])
+        bind(statement, [hash(qdn(dn))])
         case step(db, statement) do
              {:row, _} ->
                  :logger.info ~c"ADD ERROR: ~p", [dn]
-                 resp = LDAP.DS.'LDAPResult'(resultCode: :entryAlreadyExists,
+                 resp = LDAP.DS."LDAPResult"(resultCode: :entryAlreadyExists,
                         matchedDN: dn, diagnosticMessage: ~c"ERROR")
                  answer(resp, no, :addResponse, socket)
              :done ->
                  createDN(db, dn, attributes)
                  :logger.info ~c"ADD DN: ~p", [dn]
-                 resp = LDAP.DS.'LDAPResult'(resultCode: :success,
+                 resp = LDAP.DS."LDAPResult"(resultCode: :success,
                         matchedDN: dn, diagnosticMessage: ~c"OK")
                  answer(resp, no, :addResponse, socket)
         end
@@ -290,13 +290,13 @@ defmodule LDAP do
     def message(no, socket, {:delRequest, dn}, db) do
         :logger.info ~c"DEL DN: ~p", [dn]
         deleteDN(db, dn)
-        resp = LDAP.DS.'LDAPResult'(resultCode: :success, matchedDN: dn, diagnosticMessage: ~c"OK")
+        resp = LDAP.DS."LDAPResult"(resultCode: :success, matchedDN: dn, diagnosticMessage: ~c"OK")
         answer(resp, no, :delResponse, socket)
     end
 
     def message(no, socket, {:extendedReq,{_,oid,val}} = msg, _db) do
         :logger.info ~c"EXT: ~p", [msg]
-        res = LDAP.DS.'ExtendedResponse'(resultCode: :unavailable, diagnosticMessage: ~c"ERROR",
+        res = LDAP.DS."ExtendedResponse"(resultCode: :unavailable, diagnosticMessage: ~c"ERROR",
               responseName: oid, responseValue: val)
         answer(res, no, :extendedResp, socket)
     end
@@ -313,7 +313,7 @@ defmodule LDAP do
 
     defp answer(response, no, op, socket) do
         message = LDAP.DS."LDAPMessage"(messageID: no, protocolOp: {op, response})
-        {:ok, bytes} = :'LDAP'.encode(:'LDAPMessage', message)
+        {:ok, bytes} = :"LDAP".encode(:"LDAPMessage", message)
         _send = :gen_tcp.send(socket, :erlang.iolist_to_binary(bytes))
     end
 
@@ -325,7 +325,7 @@ defmodule LDAP do
     defp modifyRDN(_socket, _no, db, dn, new, _del) do
         {:ok, st} = prepare(db, "update ldap set rdn = ?1 where rdn = ?2")
         :logger.info ~c"MODIFY RDN UPDATE: ~p", [hash(qdn(dn))]
-        bind(db, st, [new,hash(qdn(dn))])
+        bind(st, [new,hash(qdn(dn))])
         step(db,st)
     end
 
@@ -337,28 +337,28 @@ defmodule LDAP do
     defp modifyAdd(db, dn, {_,att,[val]}) do
         {:ok, st} = prepare(db, "insert into ldap (rdn,att,val) values (?1,?2,?3)")
         :logger.info ~c"MOD ADD RDN: ~p", [hash(qdn(dn))]
-        bind(db, st, [hash(qdn(dn)),att,val])
+        bind(st, [hash(qdn(dn)),att,val])
         step(db,st)
     end
 
     defp modifyReplace(db, dn, {_,att,[val]}) do
         {:ok, st} = prepare(db, "update ldap set val = ?1 where rdn = ?2 and att = ?3")
         :logger.info ~c"MOD REPLACE RDN: ~p", [hash(qdn(dn))]
-        bind(db, st, [val,hash(qdn(dn)),att])
+        bind(st, [val,hash(qdn(dn)),att])
         step(db,st)
     end
 
     defp modifyDelete(db, dn, {_,att,_}) do
         {:ok, st} = prepare(db, "delete from ldap where rdn = ?1 and att = ?2")
         :logger.info ~c"MOD DEL RDN: ~p", [hash(qdn(dn))]
-        bind(db, st, [hash(qdn(dn)),att])
+        bind(st, [hash(qdn(dn)),att])
         res = step(db,st)
         collect0(db,st,res,[])
     end
 
     defp deleteDN(db, dn) do
         {:ok, st} = prepare(db, "delete from ldap where rdn = ?1")
-        bind(db, st, [hash(qdn(dn))])
+        bind(st, [hash(qdn(dn))])
         res = step(db,st)
         collect0(db,st,res,[])
     end
@@ -379,7 +379,7 @@ defmodule LDAP do
         {_,p} = :lists.foldr(fn x, {acc,res}  -> {acc + length(x), appendNotEmpty(res) ++
                 :io_lib.format(~c"(?~p,?~p,?~p)",[acc+1,acc+2,acc+3])} end, {0,[]}, norm)
         {:ok, statement} = prepare(db, ~c"insert into ldap (rdn,att,val) values " ++ p ++ ~c"")
-        :ok = bind(db, statement, :lists.flatten(norm))
+        :ok = bind(statement, :lists.flatten(norm))
         :done = step(db, statement)
     end
 

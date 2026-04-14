@@ -4,7 +4,7 @@ defmodule LDAP.Mixfile do
   def project() do
     [
       app: :ldap,
-      version: "15.1.1",
+      version: "15.4.14",
       description: "LDAP  CXC 138 22 Directory Server",
       package: package(),
       deps: deps(),
@@ -14,7 +14,7 @@ defmodule LDAP.Mixfile do
 
   def package do
     [
-      files: ~w(doc lib include src man priv mix.exs LICENSE index.html README.md),
+      files: ~w(lib include src man priv mix.exs LICENSE index.html README.md),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ldap,
@@ -22,18 +22,17 @@ defmodule LDAP.Mixfile do
     ]
   end
 
-
   def application() do
     [
       mod: {LDAP, []},
-      extra_applications: [ :eldap, :asn1, :crypto ]
+      extra_applications: [:eldap, :asn1, :crypto]
     ]
   end
 
   def deps() do
     [
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:exqlite, "~> 0.13.14"}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:exqlite, "~> 0.36.0"}
     ]
   end
 end
