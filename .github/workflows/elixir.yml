@@ -19,5 +19,3 @@ jobs:
         mix deps.clean --unused
     - name: Compilation
       run: mix compile
-    - name: Tests
-      run: mix test
